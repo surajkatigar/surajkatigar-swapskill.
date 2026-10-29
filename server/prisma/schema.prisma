@@ -1,0 +1,223 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  passwordHash     String
+  name             String
+  bio              String?
+  avatar           String?
+  credits          Int               @default(2) // 2 starter credits on signup
+  role             String            @default("USER") // "USER" | "ADMIN"
+  languages        String            @default("English")
+  availability     String?           // JSON or formatted schedule (e.g., Weekday Evenings, Weekends)
+  headline         String?           // e.g. "Fullstack Dev & Spanish Enthusiast"
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  skills           UserSkill[]
+  portfolio        PortfolioItem[]
+  learnerBookings  SessionBooking[]  @relation("LearnerBookings")
+  teacherBookings  SessionBooking[]  @relation("TeacherBookings")
+  sentMessages     ChatMessage[]     @relation("SentMessages")
+  receivedMessages ChatMessage[]     @relation("ReceivedMessages")
+  givenReviews     Review[]          @relation("GivenReviews")
+  receivedReviews  Review[]          @relation("ReceivedReviews")
+  creditLedger     CreditTransaction[]
+  hostedWorkshops  Workshop[]        @relation("HostedWorkshops")
+  workshopEnrolls  WorkshopEnrollment[]
+  createdCircles   LearningCircle[]  @relation("CreatedCircles")
+  circleMembers    CircleMember[]
+  assignedTasks    PracticeTask[]    @relation("TeacherTasks")
+  learnerTasks     PracticeTask[]    @relation("LearnerTasks")
+  filedDisputes    DisputeReport[]   @relation("FiledDisputes")
+  receivedDisputes DisputeReport[]   @relation("TargetDisputes")
+}
+
+model UserSkill {
+  id                String   @id @default(uuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skillName         String
+  category          String   // "Programming", "Languages", "Design", "Music", "Academics", "Business", etc.
+  type              String   // "TEACH" | "LEARN"
+  proficiencyLevel  String   @default("INTERMEDIATE") // "BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"
+  yearsExperience   Int      @default(1)
+  createdAt         DateTime @default(now())
+}
+
+model PortfolioItem {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  projectUrl  String?
+  mediaUrl    String?
+  createdAt   DateTime @default(now())
+}
+
+model SessionBooking {
+  id                 String       @id @default(uuid())
+  learnerId          String
+  learner            User         @relation("LearnerBookings", fields: [learnerId], references: [id], onDelete: Cascade)
+  teacherId          String
+  teacher            User         @relation("TeacherBookings", fields: [teacherId], references: [id], onDelete: Cascade)
+  skillName          String
+  scheduledAt        DateTime
+  durationMinutes    Int          @default(30)
+  status             String       @default("PENDING") // "PENDING", "ACCEPTED", "DECLINED", "COMPLETED", "CANCELLED"
+  escrowCreditLocked Boolean      @default(false)
+  learnerConfirmed   Boolean      @default(false)
+  teacherConfirmed   Boolean      @default(false)
+  meetingLink        String?
+  location           String?      @default("Online Video Room")
+  goalDescription    String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  messages           ChatMessage[]
+  reviews            Review[]
+  practiceTasks      PracticeTask[]
+  disputes           DisputeReport[]
+}
+
+model CreditTransaction {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount      Int      // +1, -1, +2
+  type        String   // "STARTER_BONUS", "ESCROW_LOCK", "ESCROW_RELEASE", "ESCROW_REFUND", "WORKSHOP_ENROLL", "WORKSHOP_EARNED"
+  sessionId   String?
+  description String
+  createdAt   DateTime @default(now())
+}
+
+model ChatMessage {
+  id            String          @id @default(uuid())
+  senderId      String
+  sender        User            @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId    String
+  receiver      User            @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  sessionId     String?
+  session       SessionBooking? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  content       String
+  attachmentUrl String?
+  fileName      String?
+  read          Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+}
+
+model Review {
+  id                  String         @id @default(uuid())
+  sessionId           String
+  session             SessionBooking @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  reviewerId          String
+  reviewer            User           @relation("GivenReviews", fields: [reviewerId], references: [id], onDelete: Cascade)
+  revieweeId          String
+  reviewee            User           @relation("ReceivedReviews", fields: [revieweeId], references: [id], onDelete: Cascade)
+  rating              Int            @default(5) // 1-5
+  comment             String
+  skillQualityRating  Int            @default(5)
+  punctualityRating   Int            @default(5)
+  createdAt           DateTime       @default(now())
+}
+
+model Workshop {
+  id              String               @id @default(uuid())
+  hostId          String
+  host            User                 @relation("HostedWorkshops", fields: [hostId], references: [id], onDelete: Cascade)
+  title           String
+  description     String
+  category        String
+  scheduledAt     DateTime
+  durationMinutes Int                  @default(45)
+  maxParticipants Int                  @default(6)
+  creditCost      Int                  @default(1)
+  meetingLink     String?
+  createdAt       DateTime             @default(now())
+
+  enrollments     WorkshopEnrollment[]
+}
+
+model WorkshopEnrollment {
+  id         String   @id @default(uuid())
+  workshopId String
+  workshop   Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrolledAt DateTime @default(now())
+
+  @@unique([workshopId, userId])
+}
+
+model LearningCircle {
+  id              String         @id @default(uuid())
+  creatorId       String
+  creator         User           @relation("CreatedCircles", fields: [creatorId], references: [id], onDelete: Cascade)
+  title           String
+  topic           String
+  category        String
+  goalDescription String
+  meetingSchedule String         @default("Every Saturday 4:00 PM")
+  createdAt       DateTime       @default(now())
+
+  members         CircleMember[]
+}
+
+model CircleMember {
+  id       String         @id @default(uuid())
+  circleId String
+  circle   LearningCircle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt DateTime       @default(now())
+
+  @@unique([circleId, userId])
+}
+
+model PracticeTask {
+  id             String          @id @default(uuid())
+  teacherId      String
+  teacher        User            @relation("TeacherTasks", fields: [teacherId], references: [id], onDelete: Cascade)
+  learnerId      String
+  learner        User            @relation("LearnerTasks", fields: [learnerId], references: [id], onDelete: Cascade)
+  sessionId      String?
+  session        SessionBooking? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  title          String
+  instructions   String
+  submissionText String?
+  feedback       String?
+  status         String          @default("ASSIGNED") // "ASSIGNED", "SUBMITTED", "REVIEWED"
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model DisputeReport {
+  id             String          @id @default(uuid())
+  reporterId     String
+  reporter       User            @relation("FiledDisputes", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUserId String
+  reportedUser   User            @relation("TargetDisputes", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  sessionId      String?
+  session        SessionBooking? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  reason         String
+  status         String          @default("OPEN") // "OPEN", "RESOLVED", "DISMISSED"
+  adminNotes     String?
+  createdAt      DateTime        @default(now())
+}
+
+model SkillCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  iconName    String?  // lucide icon identifier e.g. "Code", "Languages", "Palette"
+  popularTags String?  // comma-separated popular skills
+}

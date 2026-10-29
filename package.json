@@ -1,0 +1,11 @@
+{
+  "name": "swapskill-monorepo",
+  "version": "1.0.0",
+  "description": "SwapSkill - Peer-to-Peer Skill Exchange Platform",
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "seed": "cd server && npm run prisma:seed",
+    "build": "cd server && npm run build && cd ../client && npm run build"
+  }
+}
