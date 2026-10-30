@@ -1,5 +1,7 @@
 import express from 'express';
 import http from 'http';
+import path from 'path';
+import fs from 'fs';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
@@ -18,7 +20,7 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 // Setup Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: [CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => callback(null, true),
     credentials: true,
   },
 });
@@ -28,7 +30,7 @@ setupChatSocket(io);
 // Middlewares
 app.use(
   cors({
-    origin: [CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: true,
     credentials: true,
   })
 );
@@ -42,6 +44,15 @@ app.use('/api', apiRoutes);
 app.get('/api/health', (_req, expressRes) => {
   expressRes.json({ status: 'ok', name: 'SwapSkill API', timestamp: new Date() });
 });
+
+// Serve frontend static build in production
+const clientDist = path.resolve(__dirname, '../../client/dist');
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
 
 // Start server
 server.listen(PORT, () => {
