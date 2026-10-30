@@ -19,6 +19,7 @@ import { User, Workshop } from '../types';
 import { RatingStars } from '../components/RatingStars';
 import { BookingModal } from '../components/BookingModal';
 import { IridescentButton } from '../components/IridescentButton';
+import { Scene } from '../components/Scene';
 
 export const HomePage: React.FC = () => {
   const { user } = useAuth();
@@ -32,7 +33,12 @@ export const HomePage: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-20 pb-16">
+    <div className="space-y-16 pb-16">
+      {/* AnimatedTopDock Scene */}
+      <div className="max-w-6xl mx-auto px-4 pt-6">
+        <Scene />
+      </div>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),rgba(255,255,255,0))]"></div>
