@@ -105,7 +105,7 @@ export const LoginPage: React.FC = () => {
                 className="p-2 border border-slate-200 hover:bg-slate-50 rounded-xl text-left font-medium text-slate-700"
               >
                 <div className="font-bold text-slate-900">Alex Rivera</div>
-                <div className="text-[10px] text-slate-400">React $\longleftrightarrow$ French</div>
+                <div className="text-[10px] text-slate-400">React ↔ French</div>
               </button>
               <button
                 type="button"
@@ -113,7 +113,7 @@ export const LoginPage: React.FC = () => {
                 className="p-2 border border-slate-200 hover:bg-slate-50 rounded-xl text-left font-medium text-slate-700"
               >
                 <div className="font-bold text-slate-900">Chloe Martin</div>
-                <div className="text-[10px] text-slate-400">French $\longleftrightarrow$ React</div>
+                <div className="text-[10px] text-slate-400">French ↔ React</div>
               </button>
               <button
                 type="button"

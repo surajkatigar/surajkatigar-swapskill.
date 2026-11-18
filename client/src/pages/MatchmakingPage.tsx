@@ -112,13 +112,17 @@ export const MatchmakingPage: React.FC = () => {
         <div className="py-24 text-center text-slate-400 text-sm">Calculating smart compatibility scores...</div>
       ) : filteredMatches.length === 0 ? (
         <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
-          <p className="text-slate-600 font-semibold text-sm">No matches found for this filter.</p>
-          <p className="text-xs text-slate-400 mt-1">Make sure you have added both skills you "Can Teach" and skills you "Want to Learn" on your profile.</p>
+          <div className="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center mx-auto mb-4">
+            <ArrowLeftRight size={28} />
+          </div>
+          <p className="text-slate-700 font-bold text-base">No matches found yet</p>
+          <p className="text-xs text-slate-500 mt-2 max-w-xs mx-auto">Add at least one "Can Teach" skill and one "Want to Learn" skill on your profile to unlock peer matches.</p>
           <Link
             to="/profile"
-            className="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold"
+            className="inline-flex items-center space-x-1.5 mt-5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-100 transition-all"
           >
-            Configure Profile Skills
+            <PlusCircle size={14} />
+            <span>Configure Profile Skills</span>
           </Link>
         </div>
       ) : (

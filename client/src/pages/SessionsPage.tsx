@@ -25,6 +25,12 @@ export const SessionsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'ACCEPTED' | 'COMPLETED'>('ALL');
   const [reviewSession, setReviewSession] = useState<SessionBooking | null>(null);
+  const [toast, setToast] = useState<{msg: string; type: 'success' | 'error'} | null>(null);
+
+  const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 4000);
+  };
 
   const fetchSessions = async () => {
     setLoading(true);
@@ -47,19 +53,19 @@ export const SessionsPage: React.FC = () => {
       await api.put(`/bookings/${id}/accept`);
       await refreshUser();
       await fetchSessions();
-      alert('Session accepted! 1 credit has been locked in escrow.');
+      showToast('Session accepted! 1 credit has been locked in escrow.');
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to accept session');
+      showToast(err.response?.data?.error || 'Failed to accept session', 'error');
     }
   };
 
   const handleDecline = async (id: string) => {
-    if (!confirm('Are you sure you want to decline this session request?')) return;
     try {
       await api.put(`/bookings/${id}/decline`);
       await fetchSessions();
+      showToast('Session declined.');
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to decline');
+      showToast(err.response?.data?.error || 'Failed to decline', 'error');
     }
   };
 
@@ -68,21 +74,20 @@ export const SessionsPage: React.FC = () => {
       const res = await api.put(`/bookings/${id}/complete`);
       await refreshUser();
       await fetchSessions();
-      alert(res.data.message);
+      showToast(res.data.message);
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to complete session');
+      showToast(err.response?.data?.error || 'Failed to complete session', 'error');
     }
   };
 
   const handleCancel = async (id: string) => {
-    if (!confirm('Cancel this session? Any credit held in escrow will be refunded to the learner.')) return;
     try {
       await api.put(`/bookings/${id}/cancel`);
       await refreshUser();
       await fetchSessions();
-      alert('Session cancelled and escrow refunded.');
+      showToast('Session cancelled and escrow refunded.');
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to cancel session');
+      showToast(err.response?.data?.error || 'Failed to cancel session', 'error');
     }
   };
 

@@ -141,7 +141,29 @@ export const ExplorePage: React.FC = () => {
 
       {/* Results Grid */}
       {loading ? (
-        <div className="py-20 text-center text-slate-400 text-sm">Searching peers...</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs animate-pulse">
+              <div className="flex items-start space-x-3.5 mb-4">
+                <div className="w-13 h-13 rounded-2xl bg-slate-200 shrink-0" style={{width:'52px',height:'52px'}} />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3.5 bg-slate-200 rounded-lg w-3/4" />
+                  <div className="h-3 bg-slate-100 rounded-lg w-1/2" />
+                  <div className="h-3 bg-slate-100 rounded-lg w-1/3" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-3 bg-slate-100 rounded-lg w-full" />
+                <div className="h-3 bg-slate-100 rounded-lg w-4/5" />
+              </div>
+              <div className="mt-4 flex gap-2">
+                <div className="h-7 bg-slate-100 rounded-xl flex-1" />
+                <div className="h-7 bg-slate-100 rounded-xl w-8" />
+                <div className="h-7 bg-indigo-100 rounded-xl flex-1" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : users.length === 0 ? (
         <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
           <p className="text-slate-500 text-sm">No peers found matching your filters.</p>

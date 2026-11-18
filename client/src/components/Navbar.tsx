@@ -188,9 +188,9 @@ export const Navbar: React.FC = () => {
                 </Link>
                 <Link
                   to="/register"
-                  className="glass-btn-primary px-4 py-2 text-xs font-bold rounded-xl"
+                  className="relative px-4 py-2 text-xs font-bold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 shadow-md shadow-indigo-200 transition-all hover:scale-105 active:scale-100"
                 >
-                  Join & Get 2 Credits
+                  Join &amp; Get 2 Credits
                 </Link>
               </div>
             )}
