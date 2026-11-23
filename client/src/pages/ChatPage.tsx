@@ -10,6 +10,7 @@ import {
   Check,
   CheckCheck,
   Circle,
+  X,
 } from 'lucide-react';
 import api from '../services/api';
 import { ChatMessage, User } from '../types';
@@ -151,18 +152,18 @@ export const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden h-[82vh] flex">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-100">
+      <div className="bg-[#0d0d14]/85 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl overflow-hidden h-[82vh] flex">
         {/* Left: Conversations Sidebar */}
-        <div className="w-80 border-r border-slate-200 flex flex-col bg-slate-50/50 shrink-0">
-          <div className="p-4 border-b border-slate-200/80 bg-white">
-            <h2 className="text-base font-bold text-slate-900">Direct Messages</h2>
-            <p className="text-xs text-slate-500">Coordinate sessions and share study files</p>
+        <div className="w-80 border-r border-white/10 flex flex-col bg-white/[0.02] shrink-0">
+          <div className="p-4 border-b border-white/10 bg-[#0d0d14]/90">
+            <h2 className="text-base font-bold text-white">Direct Messages</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Coordinate sessions and share study files</p>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
+          <div className="flex-1 overflow-y-auto divide-y divide-white/5">
             {conversations.length === 0 && !activePartner ? (
-              <div className="p-6 text-center text-xs text-slate-400">
+              <div className="p-6 text-center text-xs text-slate-500">
                 No active conversations yet. Visit Explore or Matches to start a chat!
               </div>
             ) : (
@@ -176,24 +177,26 @@ export const ChatPage: React.FC = () => {
                     key={partner.id}
                     onClick={() => setActivePartner(partner)}
                     className={`w-full p-3.5 text-left flex items-start space-x-3 transition-colors ${
-                      isSelected ? 'bg-indigo-50/80' : 'hover:bg-slate-100/70'
+                      isSelected
+                        ? 'bg-indigo-600/20 border-l-2 border-indigo-500 text-white'
+                        : 'hover:bg-white/[0.04] text-slate-300'
                     }`}
                   >
                     <div className="relative shrink-0">
                       <img
                         src={partner.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}
                         alt={partner.name}
-                        className="w-11 h-11 rounded-xl object-cover border border-slate-200"
+                        className="w-11 h-11 rounded-xl object-cover border border-white/15"
                       />
                       {isOnline && (
-                        <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
+                        <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#0d0d14]"></span>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 truncate">{partner.name}</span>
+                        <span className="text-xs font-bold text-white truncate">{partner.name}</span>
                         {c.lastMessage && (
-                          <span className="text-[10px] text-slate-400">
+                          <span className="text-[10px] text-slate-500">
                             {new Date(c.lastMessage.createdAt).toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit',
@@ -201,7 +204,7 @@ export const ChatPage: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                      <p className="text-[11px] text-slate-400 truncate mt-0.5">
                         {c.lastMessage?.content || 'Started conversation'}
                       </p>
                     </div>
@@ -214,28 +217,28 @@ export const ChatPage: React.FC = () => {
 
         {/* Right: Active Chat Area */}
         {activePartner ? (
-          <div className="flex-1 flex flex-col bg-white">
+          <div className="flex-1 flex flex-col bg-transparent">
             {/* Header */}
-            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-white z-10">
+            <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#0d0d14]/90 z-10">
               <div className="flex items-center space-x-3">
                 <div className="relative">
                   <img
                     src={activePartner.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}
                     alt={activePartner.name}
-                    className="w-10 h-10 rounded-xl object-cover border border-slate-200"
+                    className="w-10 h-10 rounded-xl object-cover border border-white/15"
                   />
                   {onlineUserIds.includes(activePartner.id) && (
-                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#0d0d14]"></span>
                   )}
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">{activePartner.name}</h3>
-                  <p className="text-[11px] text-slate-500 truncate max-w-xs">{activePartner.headline}</p>
+                  <h3 className="text-sm font-bold text-white">{activePartner.name}</h3>
+                  <p className="text-[11px] text-slate-400 truncate max-w-xs">{activePartner.headline}</p>
                 </div>
               </div>
 
               {sessionParam && (
-                <div className="flex items-center space-x-1.5 px-3 py-1 bg-indigo-50 border border-indigo-200 rounded-xl text-xs font-semibold text-indigo-700">
+                <div className="flex items-center space-x-1.5 px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 rounded-xl text-xs font-semibold text-indigo-300">
                   <Calendar size={13} />
                   <span>Session Linked</span>
                 </div>
@@ -243,9 +246,9 @@ export const ChatPage: React.FC = () => {
             </div>
 
             {/* Messages Stream */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-slate-50/30">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-black/20">
               {messages.length === 0 ? (
-                <div className="py-16 text-center text-xs text-slate-400">
+                <div className="py-16 text-center text-xs text-slate-500">
                   No messages exchanged yet. Say hello and introduce what you'd like to learn!
                 </div>
               ) : (
@@ -258,23 +261,25 @@ export const ChatPage: React.FC = () => {
                       className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
                     >
                       <div
-                        className={`max-w-md rounded-2xl p-3.5 shadow-xs text-xs ${
+                        className={`max-w-md rounded-2xl p-3.5 shadow-md text-xs ${
                           isMe
-                            ? 'bg-indigo-600 text-white rounded-br-xs'
-                            : 'bg-white border border-slate-200/90 text-slate-800 rounded-bl-xs'
+                            ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-br-xs shadow-indigo-600/25'
+                            : 'bg-white/[0.08] border border-white/10 text-slate-100 rounded-bl-xs'
                         }`}
                       >
                         {msg.content && <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>}
 
                         {/* File Attachment Pill */}
                         {msg.attachmentUrl && (
-                          <div className={`mt-2.5 pt-2 border-t ${isMe ? 'border-indigo-400/50' : 'border-slate-100'}`}>
+                          <div className={`mt-2.5 pt-2 border-t ${isMe ? 'border-white/20' : 'border-white/10'}`}>
                             <a
                               href={msg.attachmentUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className={`inline-flex items-center space-x-1.5 p-2 rounded-xl text-[11px] font-semibold ${
-                                isMe ? 'bg-indigo-700/80 hover:bg-indigo-700 text-white' : 'bg-slate-100 hover:bg-slate-200 text-indigo-600'
+                              className={`inline-flex items-center space-x-1.5 p-2 rounded-xl text-[11px] font-semibold transition-colors ${
+                                isMe
+                                  ? 'bg-indigo-700/80 hover:bg-indigo-700 text-white'
+                                  : 'bg-white/10 hover:bg-white/20 text-indigo-300'
                               }`}
                             >
                               <Paperclip size={12} />
@@ -285,7 +290,7 @@ export const ChatPage: React.FC = () => {
                         )}
                       </div>
 
-                      <span className="text-[10px] text-slate-400 mt-1 px-1">
+                      <span className="text-[10px] text-slate-500 mt-1 px-1">
                         {new Date(msg.createdAt).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
@@ -304,12 +309,14 @@ export const ChatPage: React.FC = () => {
             </div>
 
             {/* Input Bar */}
-            <div className="p-3 sm:p-4 border-t border-slate-200 bg-white">
+            <div className="p-3 sm:p-4 border-t border-white/10 bg-[#0d0d14]/90">
               {showAttachInput && (
-                <div className="mb-2 p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                  <div className="flex items-center justify-between text-[11px] font-semibold text-slate-700">
+                <div className="mb-2.5 p-3 bg-white/[0.04] border border-white/10 rounded-xl space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-semibold text-slate-300">
                     <span>Attach Practice Exercise or Resource Link</span>
-                    <button onClick={() => setShowAttachInput(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+                    <button onClick={() => setShowAttachInput(false)} className="text-slate-400 hover:text-white p-0.5">
+                      <X size={14} />
+                    </button>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <input
@@ -317,14 +324,14 @@ export const ChatPage: React.FC = () => {
                       placeholder="File / Link title (e.g. React-Cheatsheet)"
                       value={fileName}
                       onChange={(e) => setFileName(e.target.value)}
-                      className="px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                      className="px-2.5 py-1.5 text-xs border border-white/10 rounded-lg bg-white/[0.06] text-white placeholder-slate-500 focus:outline-hidden focus:border-indigo-500"
                     />
                     <input
                       type="url"
                       placeholder="https://..."
                       value={attachmentUrl}
                       onChange={(e) => setAttachmentUrl(e.target.value)}
-                      className="px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                      className="px-2.5 py-1.5 text-xs border border-white/10 rounded-lg bg-white/[0.06] text-white placeholder-slate-500 focus:outline-hidden focus:border-indigo-500"
                     />
                   </div>
                 </div>
@@ -335,7 +342,9 @@ export const ChatPage: React.FC = () => {
                   type="button"
                   onClick={() => setShowAttachInput(!showAttachInput)}
                   className={`p-2.5 rounded-xl border transition-colors ${
-                    showAttachInput ? 'bg-indigo-50 border-indigo-200 text-indigo-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 border-slate-200'
+                    showAttachInput
+                      ? 'bg-indigo-600/30 border-indigo-500 text-indigo-300'
+                      : 'text-slate-400 hover:text-white hover:bg-white/10 border-white/10'
                   }`}
                   title="Share practice file or link"
                 >
@@ -346,12 +355,12 @@ export const ChatPage: React.FC = () => {
                   value={inputContent}
                   onChange={(e) => setInputContent(e.target.value)}
                   placeholder={`Message ${activePartner.name}...`}
-                  className="flex-1 px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                  className="flex-1 px-4 py-2.5 text-sm border border-white/10 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 focus:outline-hidden bg-white/[0.06] text-white placeholder-slate-500"
                 />
                 <button
                   type="submit"
                   disabled={!inputContent.trim() && !attachmentUrl.trim()}
-                  className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-xs transition-colors disabled:opacity-40"
+                  className="p-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-amber-500 hover:scale-105 active:scale-100 text-white rounded-xl shadow-lg shadow-indigo-600/25 transition-all disabled:opacity-40 disabled:hover:scale-100"
                 >
                   <Send size={16} />
                 </button>
@@ -359,7 +368,7 @@ export const ChatPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">
+          <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">
             Select a peer from the left or browse peers to start messaging.
           </div>
         )}

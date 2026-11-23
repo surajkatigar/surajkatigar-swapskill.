@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowLeftRight, HelpCircle, PlusCircle, CheckCircle2 } from 'lucide-react';
+import { Sparkles, ArrowLeftRight, PlusCircle } from 'lucide-react';
 import api from '../services/api';
 import { MatchResult, User } from '../types';
 import { MatchCard } from '../components/MatchCard';
@@ -41,34 +41,34 @@ export const MatchmakingPage: React.FC = () => {
   const mutualCount = matches.filter((m) => m.matchType === 'MUTUAL_EXCHANGE').length;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 text-slate-100">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold mb-2">
-            <Sparkles size={13} className="text-indigo-600 animate-spin" />
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-indigo-950/70 border border-indigo-500/40 text-indigo-300 text-xs font-bold mb-2">
+            <Sparkles size={13} className="text-indigo-400 animate-spin" />
             <span>Automated Peer Barter Matchmaker</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Your Smart Peer Matches</h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">Your Smart Peer Matches</h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
             We cross-reference your "Can Teach" and "Want to Learn" skills with peers to discover high-compatibility knowledge exchanges.
           </p>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex p-1 bg-white border border-slate-200 rounded-xl text-xs font-semibold shadow-xs">
+        <div className="flex p-1 bg-[#0d0d14]/80 border border-white/10 rounded-xl text-xs font-semibold shadow-xl">
           <button
             onClick={() => setFilterType('ALL')}
-            className={`px-3.5 py-2 rounded-lg transition-colors ${
-              filterType === 'ALL' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3.5 py-2 rounded-lg transition-all ${
+              filterType === 'ALL' ? 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/30' : 'text-slate-400 hover:text-white'
             }`}
           >
             All Matches ({matches.length})
           </button>
           <button
             onClick={() => setFilterType('MUTUAL')}
-            className={`px-3.5 py-2 rounded-lg flex items-center space-x-1.5 transition-colors ${
-              filterType === 'MUTUAL' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:text-indigo-600'
+            className={`px-3.5 py-2 rounded-lg flex items-center space-x-1.5 transition-all ${
+              filterType === 'MUTUAL' ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold shadow-md shadow-indigo-600/30' : 'text-slate-400 hover:text-indigo-300'
             }`}
           >
             <Sparkles size={13} />
@@ -76,8 +76,8 @@ export const MatchmakingPage: React.FC = () => {
           </button>
           <button
             onClick={() => setFilterType('CAN_TEACH')}
-            className={`px-3.5 py-2 rounded-lg transition-colors ${
-              filterType === 'CAN_TEACH' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3.5 py-2 rounded-lg transition-all ${
+              filterType === 'CAN_TEACH' ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/30' : 'text-slate-400 hover:text-white'
             }`}
           >
             Can Teach You
@@ -86,52 +86,51 @@ export const MatchmakingPage: React.FC = () => {
       </div>
 
       {/* Matchmaking Explanation Banner */}
-      <div className="bg-gradient-to-r from-indigo-500/10 via-amber-500/10 to-transparent p-4 sm:p-5 rounded-2xl border border-indigo-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+      <div className="bg-[#0d0d14]/80 backdrop-blur-xl p-4 sm:p-5 rounded-2xl border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-600/30">
             <ArrowLeftRight size={20} />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-900">How Compatibility Is Scored</h4>
-            <p className="text-xs text-slate-600">
-              Users with <strong>reciprocal skills</strong> (you teach what they need AND they teach what you need) receive 90%+ compatibility scores.
+            <h4 className="text-sm font-bold text-white">How Compatibility Is Scored</h4>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Users with <strong className="text-indigo-300">reciprocal skills</strong> (you teach what they need AND they teach what you need) receive 90%+ compatibility scores.
             </p>
           </div>
         </div>
         <Link
           to="/profile"
-          className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-indigo-700 text-xs font-bold rounded-xl shrink-0 flex items-center space-x-1.5 shadow-xs"
+          className="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-white/[0.08] hover:bg-white/[0.14] text-slate-200 border border-white/10 rounded-xl text-xs font-semibold shrink-0 transition-colors"
         >
-          <PlusCircle size={14} />
-          <span>Update Your Teach & Learn Skills</span>
+          <PlusCircle size={14} className="text-indigo-400" />
+          <span>Add More Skills</span>
         </Link>
       </div>
 
       {/* Matches Grid */}
       {loading ? (
-        <div className="py-24 text-center text-slate-400 text-sm">Calculating smart compatibility scores...</div>
+        <div className="py-24 text-center text-slate-400 text-sm">Calculating reciprocal compatibility scores...</div>
       ) : filteredMatches.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center mx-auto mb-4">
-            <ArrowLeftRight size={28} />
-          </div>
-          <p className="text-slate-700 font-bold text-base">No matches found yet</p>
-          <p className="text-xs text-slate-500 mt-2 max-w-xs mx-auto">Add at least one "Can Teach" skill and one "Want to Learn" skill on your profile to unlock peer matches.</p>
+        <div className="bg-[#0d0d14]/80 backdrop-blur-xl rounded-2xl p-12 text-center border border-white/10 shadow-xl">
+          <Sparkles size={32} className="mx-auto text-slate-500 mb-3" />
+          <h3 className="text-base font-bold text-white">No matches found in this filter</h3>
+          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
+            Try adding more skills to your "Can Teach" or "Wants to Learn" lists on your profile to unlock new peer pairings.
+          </p>
           <Link
             to="/profile"
-            className="inline-flex items-center space-x-1.5 mt-5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-100 transition-all"
+            className="inline-block mt-4 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-600/30"
           >
-            <PlusCircle size={14} />
-            <span>Configure Profile Skills</span>
+            Update Your Skills
           </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMatches.map((match) => (
+          {filteredMatches.map((m) => (
             <MatchCard
-              key={match.user.id}
-              match={match}
-              onBook={() => setSelectedTeacher(match.user)}
+              key={m.user.id}
+              match={m}
+              onBook={() => setSelectedTeacher(m.user)}
             />
           ))}
         </div>

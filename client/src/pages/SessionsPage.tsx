@@ -10,7 +10,6 @@ import {
   Coins,
   Star,
   ExternalLink,
-  BookOpen,
 } from 'lucide-react';
 import api from '../services/api';
 import { SessionBooking } from '../types';
@@ -97,24 +96,39 @@ export const SessionsPage: React.FC = () => {
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 text-slate-100">
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`fixed bottom-6 right-6 z-50 p-4 rounded-2xl shadow-2xl border text-xs font-bold transition-all animate-in fade-in ${
+            toast.type === 'success'
+              ? 'bg-emerald-950/90 text-emerald-200 border-emerald-500/40'
+              : 'bg-rose-950/90 text-rose-200 border-rose-500/40'
+          }`}
+        >
+          {toast.msg}
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Your Learning Sessions</h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Manage your peer teaching & learning bookings, track escrow status, and launch live rooms.
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">Your Learning Sessions</h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            Manage your peer teaching &amp; learning bookings, track escrow status, and launch live rooms.
           </p>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex p-1 bg-white border border-slate-200 rounded-xl text-xs font-semibold shadow-xs">
+        <div className="flex p-1 bg-[#0d0d14]/80 border border-white/10 rounded-xl text-xs font-semibold shadow-xl">
           {(['ALL', 'PENDING', 'ACCEPTED', 'COMPLETED'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
-              className={`px-3 py-1.5 rounded-lg transition-colors capitalize ${
-                filter === tab ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+              className={`px-3 py-1.5 rounded-lg transition-all capitalize ${
+                filter === tab
+                  ? 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'
               }`}
             >
               {tab.toLowerCase()}
@@ -124,19 +138,19 @@ export const SessionsPage: React.FC = () => {
       </div>
 
       {/* Escrow Rule Reminder */}
-      <div className="bg-indigo-50/70 border border-indigo-100 rounded-2xl p-4 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
-            <ShieldCheck size={18} />
+      <div className="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-4 flex items-center justify-between backdrop-blur-xl">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-600/30">
+            <ShieldCheck size={20} />
           </div>
           <div>
-            <p className="text-xs font-bold text-indigo-950">Escrow Security Engine</p>
-            <p className="text-[11px] text-indigo-700">
+            <p className="text-xs font-bold text-white">Escrow Security Engine</p>
+            <p className="text-[11px] text-indigo-300/80 leading-relaxed">
               When a session is accepted, 1 credit is temporarily held in escrow. Once you complete the 30-min session and mark it done, the credit is officially released to the teacher!
             </p>
           </div>
         </div>
-        <div className="hidden sm:flex items-center space-x-1.5 font-mono text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
+        <div className="hidden sm:flex items-center space-x-1.5 font-mono text-xs font-bold text-amber-300 bg-amber-500/15 border border-amber-500/30 px-3 py-1.5 rounded-xl">
           <Coins size={14} />
           <span>Your Balance: {user?.credits}c</span>
         </div>
@@ -146,9 +160,9 @@ export const SessionsPage: React.FC = () => {
       {loading ? (
         <div className="py-24 text-center text-slate-400 text-sm">Loading your sessions...</div>
       ) : filteredSessions.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
-          <Calendar size={32} className="mx-auto text-slate-300 mb-3" />
-          <p className="text-slate-600 font-semibold text-sm">No sessions found in this category.</p>
+        <div className="bg-[#0d0d14]/80 rounded-2xl p-12 text-center border border-white/10 shadow-xl backdrop-blur-xl">
+          <Calendar size={32} className="mx-auto text-slate-500 mb-3" />
+          <p className="text-white font-semibold text-sm">No sessions found in this category.</p>
           <p className="text-xs text-slate-400 mt-1">Book a session with a peer or accept pending requests.</p>
         </div>
       ) : (
@@ -162,115 +176,115 @@ export const SessionsPage: React.FC = () => {
             return (
               <div
                 key={session.id}
-                className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs hover:border-slate-300 transition-all flex flex-col md:flex-row md:items-center justify-between gap-5"
+                className="bg-[#0d0d14]/80 backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-xl hover:border-indigo-500/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-5"
               >
                 {/* Left: Session & Partner Info */}
                 <div className="flex items-start space-x-4">
                   <img
                     src={partner.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}
                     alt={partner.name}
-                    className="w-14 h-14 rounded-2xl object-cover border border-slate-200 shrink-0"
+                    className="w-14 h-14 rounded-2xl object-cover border border-white/15 shrink-0 shadow-md"
                   />
                   <div>
                     <div className="flex items-center space-x-2">
-                      <span className="font-extrabold text-base text-slate-900">{session.skillName}</span>
+                      <span className="font-extrabold text-base text-white">{session.skillName}</span>
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${
                           session.status === 'ACCEPTED'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : session.status === 'PENDING'
-                            ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                            ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-500/40'
                             : session.status === 'COMPLETED'
-                            ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                            : 'bg-slate-100 text-slate-600'
+                            ? 'bg-indigo-950/70 text-indigo-300 border border-indigo-500/40'
+                            : session.status === 'PENDING'
+                            ? 'bg-amber-950/70 text-amber-300 border border-amber-500/40'
+                            : 'bg-rose-950/70 text-rose-300 border border-rose-500/40'
                         }`}
                       >
                         {session.status}
                       </span>
                     </div>
 
-                    <p className="text-xs text-slate-500 mt-1">
-                      {isLearner ? (
-                        <span>
-                          Learning from <strong className="text-slate-800">{partner.name}</strong>
-                        </span>
-                      ) : (
-                        <span>
-                          Teaching <strong className="text-slate-800">{partner.name}</strong>
-                        </span>
-                      )}
+                    <p className="text-xs text-slate-400 mt-1">
+                      {isLearner ? 'Taught by' : 'Learning with'}:{' '}
+                      <span
+                        onClick={() => navigate(`/users/${partner.id}`)}
+                        className="font-bold text-white hover:text-indigo-400 cursor-pointer underline ml-1"
+                      >
+                        {partner.name}
+                      </span>
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-slate-500">
-                      <span className="flex items-center space-x-1">
-                        <Calendar size={13} className="text-slate-400" />
+                    <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-slate-400">
+                      <span className="flex items-center space-x-1.5">
+                        <Calendar size={13} className="text-indigo-400" />
                         <span>{new Date(session.scheduledAt).toLocaleDateString()}</span>
                       </span>
-                      <span className="flex items-center space-x-1">
-                        <Clock size={13} className="text-slate-400" />
-                        <span>
-                          {new Date(session.scheduledAt).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}{' '}
-                          ({session.durationMinutes} mins)
-                        </span>
+                      <span>•</span>
+                      <span className="flex items-center space-x-1.5">
+                        <Clock size={13} className="text-indigo-400" />
+                        <span>{new Date(session.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({session.durationMinutes}m)</span>
                       </span>
+                      {session.location && (
+                        <>
+                          <span>•</span>
+                          <span className="text-[11px] truncate max-w-xs">{session.location}</span>
+                        </>
+                      )}
                     </div>
 
                     {session.goalDescription && (
-                      <p className="mt-2 text-xs text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100 line-clamp-2">
-                        <strong>Goal:</strong> {session.goalDescription}
+                      <p className="mt-2 text-xs text-slate-300 italic bg-white/[0.04] p-2 rounded-lg border border-white/[0.06] max-w-xl">
+                        Goal: "{session.goalDescription}"
                       </p>
                     )}
-
-                    {/* Escrow Status Tag */}
-                    <div className="mt-2.5 flex items-center space-x-2">
-                      {session.escrowCreditLocked ? (
-                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
-                          <ShieldCheck size={12} className="text-amber-600" />
-                          <span>1 Credit Currently in Escrow</span>
-                        </span>
-                      ) : session.status === 'COMPLETED' ? (
-                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
-                          <Coins size={12} className="text-emerald-600" />
-                          <span>1 Credit Released to Teacher</span>
-                        </span>
-                      ) : null}
-                    </div>
                   </div>
                 </div>
 
                 {/* Right: Actions */}
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0 justify-end pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
-                  {/* Chat button */}
+                <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                   <button
-                    onClick={() => navigate(`/chat?partner=${partner.id}&session=${session.id}`)}
-                    className="glass-btn p-2.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 text-slate-700"
-                    title="Direct Chat"
+                    onClick={() => navigate(`/chat?partner=${partner.id}`)}
+                    className="p-2.5 text-slate-300 hover:text-white bg-white/[0.07] hover:bg-white/[0.12] border border-white/10 rounded-xl transition-colors"
+                    title="Open Direct Chat"
                   >
-                    <MessageSquare size={14} className="text-indigo-600" />
-                    <span className="hidden sm:inline">Chat</span>
+                    <MessageSquare size={16} />
                   </button>
 
-                  {/* Actions depending on status */}
+                  {/* Pending actions for Teacher */}
                   {session.status === 'PENDING' && isTeacher && (
                     <>
                       <button
                         onClick={() => handleAccept(session.id)}
-                        className="glass-btn-emerald px-4 py-2 rounded-xl text-xs font-bold"
+                        className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md shadow-emerald-600/30 transition-all hover:scale-105 active:scale-100"
                       >
-                        Accept & Lock Escrow
+                        <CheckCircle size={14} />
+                        <span>Accept &amp; Lock Credit</span>
                       </button>
                       <button
                         onClick={() => handleDecline(session.id)}
-                        className="glass-btn px-3 py-2 text-rose-600 rounded-xl text-xs font-semibold"
+                        className="px-3.5 py-2 bg-white/[0.07] hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-white/10 hover:border-rose-500/40 rounded-xl text-xs font-semibold transition-colors"
                       >
-                        Decline
+                        <XCircle size={14} />
+                        <span>Decline</span>
                       </button>
                     </>
                   )}
 
+                  {/* Pending info for Learner */}
+                  {session.status === 'PENDING' && isLearner && (
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-amber-300 font-semibold bg-amber-500/15 border border-amber-500/30 px-3 py-1.5 rounded-xl">
+                        Waiting for Teacher
+                      </span>
+                      <button
+                        onClick={() => handleCancel(session.id)}
+                        className="px-3 py-1.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/20 border border-rose-500/30 rounded-xl transition-colors"
+                      >
+                        Cancel Request
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Accepted state */}
                   {session.status === 'ACCEPTED' && (
                     <>
                       {session.meetingLink && (
@@ -278,54 +292,31 @@ export const SessionsPage: React.FC = () => {
                           href={session.meetingLink}
                           target="_blank"
                           rel="noreferrer"
-                          className="glass-btn-primary px-3.5 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5"
+                          className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md shadow-emerald-600/25 transition-all hover:scale-105 active:scale-100"
                         >
                           <Video size={14} />
-                          <span>Join Meeting</span>
+                          <span>Join Video Room</span>
                         </a>
                       )}
+
                       <button
                         onClick={() => handleComplete(session.id)}
-                        className="glass-btn-emerald px-3.5 py-2 rounded-xl text-xs font-bold"
-                        title="Mark complete to release 1 credit to teacher"
+                        className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-600/25 transition-all hover:scale-105 active:scale-100"
                       >
-                        Complete & Release Credit
-                      </button>
-                      <button
-                        onClick={() => handleCancel(session.id)}
-                        className="glass-btn p-2 text-slate-400 hover:text-rose-600 rounded-xl"
-                        title="Cancel Session & Refund Escrow"
-                      >
-                        <XCircle size={18} />
+                        Mark Done &amp; Transfer Credit
                       </button>
                     </>
                   )}
 
-                  {session.status === 'COMPLETED' && (
-                    <>
-                      {!hasReviewed ? (
-                        <button
-                          onClick={() => setReviewSession(session)}
-                          className="glass-pill-amber px-3.5 py-2 rounded-xl text-xs font-bold text-amber-950 flex items-center space-x-1.5"
-                        >
-                          <Star size={14} className="text-amber-500 fill-amber-400" />
-                          <span>Leave Review</span>
-                        </button>
-                      ) : (
-                        <span className="glass-btn text-xs font-semibold text-emerald-700 px-3 py-1.5 rounded-xl flex items-center space-x-1">
-                          <CheckCircle size={14} className="text-emerald-500" />
-                          <span>Reviewed</span>
-                        </span>
-                      )}
-
-                      <button
-                        onClick={() => navigate('/practice')}
-                        className="glass-btn px-3 py-2 text-slate-700 rounded-xl text-xs font-semibold flex items-center space-x-1"
-                      >
-                        <BookOpen size={13} className="text-indigo-600" />
-                        <span>Tasks</span>
-                      </button>
-                    </>
+                  {/* Completed Review button */}
+                  {session.status === 'COMPLETED' && !hasReviewed && (
+                    <button
+                      onClick={() => setReviewSession(session)}
+                      className="px-3.5 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-colors"
+                    >
+                      <Star size={14} className="fill-amber-300" />
+                      <span>Review Session</span>
+                    </button>
                   )}
                 </div>
               </div>
@@ -339,14 +330,16 @@ export const SessionsPage: React.FC = () => {
         <ReviewModal
           sessionId={reviewSession.id}
           partnerName={
-            user?.id === reviewSession.learnerId ? reviewSession.teacher.name : reviewSession.learner.name
+            user?.id === reviewSession.learnerId
+              ? reviewSession.teacher.name
+              : reviewSession.learner.name
           }
           skillName={reviewSession.skillName}
           onClose={() => setReviewSession(null)}
           onSuccess={() => {
             setReviewSession(null);
             fetchSessions();
-            alert('Review submitted! Thank you for strengthening community trust.');
+            showToast('Thank you for rating your peer!');
           }}
         />
       )}

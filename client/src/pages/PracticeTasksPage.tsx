@@ -9,6 +9,7 @@ import {
   Award,
   X,
   AlertCircle,
+  Check,
 } from 'lucide-react';
 import api from '../services/api';
 import { PracticeTask } from '../types';
@@ -19,6 +20,7 @@ export const PracticeTasksPage: React.FC = () => {
   const [tasks, setTasks] = useState<PracticeTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'LEARNER' | 'TEACHER'>('LEARNER');
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
 
   // Submit task modal state
   const [submittingTaskId, setSubmittingTaskId] = useState<string | null>(null);
@@ -27,6 +29,11 @@ export const PracticeTasksPage: React.FC = () => {
   // Review task modal state
   const [reviewingTaskId, setReviewingTaskId] = useState<string | null>(null);
   const [feedbackText, setFeedbackText] = useState('');
+
+  const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 4000);
+  };
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -55,9 +62,9 @@ export const PracticeTasksPage: React.FC = () => {
       await fetchTasks();
       setSubmittingTaskId(null);
       setSubmissionText('');
-      alert('Task submitted! Your teacher will review it.');
+      showToast('Task submitted! Your teacher will review it.');
     } catch (e) {
-      console.error(e);
+      showToast('Failed to submit task.', 'error');
     }
   };
 
@@ -72,9 +79,9 @@ export const PracticeTasksPage: React.FC = () => {
       await fetchTasks();
       setReviewingTaskId(null);
       setFeedbackText('');
-      alert('Feedback delivered to the learner!');
+      showToast('Feedback delivered to the learner!');
     } catch (e) {
-      console.error(e);
+      showToast('Failed to deliver feedback.', 'error');
     }
   };
 
@@ -83,34 +90,52 @@ export const PracticeTasksPage: React.FC = () => {
   const currentList = activeTab === 'LEARNER' ? learnerTasks : teacherTasks;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 text-slate-100">
+      {/* Toast Alert */}
+      {toast && (
+        <div
+          className={`fixed top-5 right-5 z-50 flex items-center space-x-2.5 px-4 py-3 rounded-xl shadow-2xl text-sm font-semibold border backdrop-blur-xl animate-in fade-in slide-in-from-top-2 ${
+            toast.type === 'success'
+              ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200'
+              : 'bg-rose-950/90 border-rose-500/50 text-rose-200'
+          }`}
+        >
+          {toast.type === 'success' ? <Check size={16} /> : <AlertCircle size={16} />}
+          <span>{toast.msg}</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold mb-2">
-            <BookOpen size={13} className="text-emerald-600" />
-            <span>Practice Exercises & Personalized Feedback</span>
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold mb-2">
+            <BookOpen size={13} className="text-emerald-400" />
+            <span>Practice Exercises &amp; Personalized Feedback</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Practice Tasks & Quizzes</h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">Practice Tasks &amp; Quizzes</h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
             Solidify learning between 30-min sessions with practical drills and instructor code reviews.
           </p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex p-1 bg-white border border-slate-200 rounded-xl text-xs font-semibold shadow-xs">
+        <div className="flex p-1 bg-white/[0.06] border border-white/10 rounded-xl text-xs font-semibold shrink-0">
           <button
             onClick={() => setActiveTab('LEARNER')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'LEARNER' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-2 rounded-lg transition-all ${
+              activeTab === 'LEARNER'
+                ? 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/30'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             Assigned to You ({learnerTasks.length})
           </button>
           <button
             onClick={() => setActiveTab('TEACHER')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'TEACHER' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-2 rounded-lg transition-all ${
+              activeTab === 'TEACHER'
+                ? 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/30'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             Tasks You Assigned ({teacherTasks.length})
@@ -120,11 +145,18 @@ export const PracticeTasksPage: React.FC = () => {
 
       {/* Task List */}
       {loading ? (
-        <div className="py-24 text-center text-slate-400 text-sm">Loading practice assignments...</div>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="bg-[#0d0d14]/80 rounded-2xl p-5 border border-white/10 animate-pulse space-y-4">
+              <div className="h-5 bg-white/15 rounded-md w-1/4" />
+              <div className="h-14 bg-white/5 rounded-xl" />
+            </div>
+          ))}
+        </div>
       ) : currentList.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
-          <p className="text-slate-500 text-sm">No tasks in this category.</p>
-          <p className="text-xs text-slate-400 mt-1">
+        <div className="bg-[#0d0d14]/80 backdrop-blur-xl rounded-2xl p-12 text-center border border-white/10">
+          <p className="text-slate-400 text-sm">No tasks in this category.</p>
+          <p className="text-xs text-slate-500 mt-1">
             {activeTab === 'LEARNER'
               ? 'Complete a session with a teacher to receive practice homework!'
               : 'Visit your completed sessions to assign practice exercises to learners.'}
@@ -135,16 +167,16 @@ export const PracticeTasksPage: React.FC = () => {
           {currentList.map((task) => (
             <div
               key={task.id}
-              className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs hover:border-slate-300 transition-all space-y-4"
+              className="bg-[#0d0d14]/80 backdrop-blur-xl rounded-2xl p-5 border border-white/10 hover:border-white/20 shadow-xl transition-all space-y-4"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/10">
                 <div className="flex items-center space-x-3">
-                  <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
                     <BookOpen size={18} />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-900">{task.title}</h3>
-                    <p className="text-xs text-slate-500">
+                    <h3 className="text-base font-bold text-white">{task.title}</h3>
+                    <p className="text-xs text-slate-400">
                       {activeTab === 'LEARNER' ? `Teacher: ${task.teacher.name}` : `Learner: ${task.learner.name}`}
                     </p>
                   </div>
@@ -153,10 +185,10 @@ export const PracticeTasksPage: React.FC = () => {
                 <span
                   className={`text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider self-start sm:self-auto ${
                     task.status === 'REVIEWED'
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                       : task.status === 'SUBMITTED'
-                      ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                      : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                      : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                   }`}
                 >
                   {task.status}
@@ -164,8 +196,8 @@ export const PracticeTasksPage: React.FC = () => {
               </div>
 
               {/* Instructions */}
-              <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-xs text-slate-700 space-y-1">
-                <span className="font-bold text-slate-900 block text-[11px] uppercase tracking-wider">
+              <div className="bg-white/[0.04] p-3.5 rounded-xl border border-white/5 text-xs text-slate-300 space-y-1">
+                <span className="font-bold text-white block text-[11px] uppercase tracking-wider">
                   Exercise Instructions
                 </span>
                 <p className="leading-relaxed whitespace-pre-wrap">{task.instructions}</p>
@@ -173,34 +205,34 @@ export const PracticeTasksPage: React.FC = () => {
 
               {/* Learner Submission if exists */}
               {task.submissionText && (
-                <div className="bg-indigo-50/50 p-3.5 rounded-xl border border-indigo-100 text-xs space-y-1">
-                  <span className="font-bold text-indigo-900 block text-[11px] uppercase tracking-wider">
+                <div className="bg-indigo-950/40 p-3.5 rounded-xl border border-indigo-500/30 text-xs space-y-1">
+                  <span className="font-bold text-indigo-300 block text-[11px] uppercase tracking-wider">
                     Learner Submission
                   </span>
-                  <p className="text-slate-800 leading-relaxed whitespace-pre-wrap">{task.submissionText}</p>
+                  <p className="text-slate-200 leading-relaxed whitespace-pre-wrap">{task.submissionText}</p>
                 </div>
               )}
 
               {/* Teacher Feedback if exists */}
               {task.feedback && (
-                <div className="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-100 text-xs space-y-1">
-                  <span className="font-bold text-emerald-900 block text-[11px] uppercase tracking-wider flex items-center space-x-1.5">
-                    <Award size={13} className="text-emerald-600" />
+                <div className="bg-emerald-950/40 p-3.5 rounded-xl border border-emerald-500/30 text-xs space-y-1">
+                  <span className="font-bold text-emerald-300 block text-[11px] uppercase tracking-wider flex items-center space-x-1.5">
+                    <Award size={13} className="text-emerald-400" />
                     <span>Teacher Feedback</span>
                   </span>
-                  <p className="text-emerald-950 leading-relaxed whitespace-pre-wrap">{task.feedback}</p>
+                  <p className="text-emerald-200 leading-relaxed whitespace-pre-wrap">{task.feedback}</p>
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className="flex justify-end pt-2 border-t border-slate-100">
+              <div className="flex justify-end pt-2 border-t border-white/10">
                 {activeTab === 'LEARNER' && task.status === 'ASSIGNED' && (
                   <button
                     onClick={() => {
                       setSubmittingTaskId(task.id);
                       setSubmissionText('');
                     }}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-indigo-600/25 hover:scale-[1.01] active:scale-100"
                   >
                     Submit Completed Work
                   </button>
@@ -212,7 +244,7 @@ export const PracticeTasksPage: React.FC = () => {
                       setReviewingTaskId(task.id);
                       setFeedbackText('');
                     }}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                    className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/25 hover:scale-[1.01] active:scale-100"
                   >
                     Provide Feedback
                   </button>
@@ -225,16 +257,16 @@ export const PracticeTasksPage: React.FC = () => {
 
       {/* Learner Submit Modal */}
       {submittingTaskId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
+          <div className="bg-[#0b0b12]/95 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-white/10 relative text-slate-100">
             <button
               onClick={() => setSubmittingTaskId(null)}
-              className="absolute top-4 right-4 text-slate-400 p-1"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
             >
               <X size={20} />
             </button>
-            <h3 className="text-lg font-bold text-slate-900">Submit Your Practice Exercise</h3>
-            <p className="text-xs text-slate-500 mt-1">Provide code snippets, solution text, or links to your work.</p>
+            <h3 className="text-lg font-bold text-white">Submit Your Practice Exercise</h3>
+            <p className="text-xs text-slate-400 mt-1">Provide code snippets, solution text, or links to your work.</p>
 
             <form onSubmit={handleLearnerSubmit} className="mt-4 space-y-4">
               <textarea
@@ -243,19 +275,19 @@ export const PracticeTasksPage: React.FC = () => {
                 placeholder="Paste code or describe your solution, e.g.: https://github.com/..."
                 value={submissionText}
                 onChange={(e) => setSubmissionText(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                className="w-full px-3 py-2 text-sm border border-white/10 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 focus:outline-hidden bg-white/[0.06] text-white placeholder-slate-500"
               />
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end space-x-2 pt-2 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setSubmittingTaskId(null)}
-                  className="px-4 py-2 text-xs text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className="px-4 py-2 text-xs text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold"
+                  className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-amber-500 hover:scale-[1.02] active:scale-100 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all"
                 >
                   Submit Solution
                 </button>
@@ -267,16 +299,16 @@ export const PracticeTasksPage: React.FC = () => {
 
       {/* Teacher Review Modal */}
       {reviewingTaskId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
+          <div className="bg-[#0b0b12]/95 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-white/10 relative text-slate-100">
             <button
               onClick={() => setReviewingTaskId(null)}
-              className="absolute top-4 right-4 text-slate-400 p-1"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
             >
               <X size={20} />
             </button>
-            <h3 className="text-lg font-bold text-slate-900">Provide Review & Guidance</h3>
-            <p className="text-xs text-slate-500 mt-1">Share actionable tips on how the learner can improve.</p>
+            <h3 className="text-lg font-bold text-white">Provide Review &amp; Guidance</h3>
+            <p className="text-xs text-slate-400 mt-1">Share actionable tips on how the learner can improve.</p>
 
             <form onSubmit={handleTeacherFeedback} className="mt-4 space-y-4">
               <textarea
@@ -285,19 +317,19 @@ export const PracticeTasksPage: React.FC = () => {
                 placeholder="Great job! One recommendation: avoid mutating state directly..."
                 value={feedbackText}
                 onChange={(e) => setFeedbackText(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                className="w-full px-3 py-2 text-sm border border-white/10 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 focus:outline-hidden bg-white/[0.06] text-white placeholder-slate-500"
               />
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end space-x-2 pt-2 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setReviewingTaskId(null)}
-                  className="px-4 py-2 text-xs text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className="px-4 py-2 text-xs text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold"
+                  className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:scale-[1.02] active:scale-100 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/30 transition-all"
                 >
                   Deliver Feedback
                 </button>
