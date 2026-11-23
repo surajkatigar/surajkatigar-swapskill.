@@ -182,3 +182,45 @@ export const getDemoUsers = async (_req: Request, res: Response): Promise<void> 
     res.status(500).json({ error: 'Failed to fetch demo users' });
   }
 };
+
+export const switchDemo = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      res.status(400).json({ error: 'User ID is required' });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        skills: true,
+        portfolio: true,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    const { passwordHash, ...safeUser } = user;
+    res.json({ user: safeUser, token });
+  } catch (error: any) {
+    console.error('switchDemo error:', error);
+    res.status(500).json({ error: 'Failed to switch user account' });
+  }
+};

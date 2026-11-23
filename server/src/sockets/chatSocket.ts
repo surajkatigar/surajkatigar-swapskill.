@@ -12,6 +12,12 @@ export const setupChatSocket = (io: Server) => {
     // User registers their presence
     socket.on('register_user', (userId: string) => {
       if (userId) {
+        // Disassociate any previous user previously tied to this socket
+        for (const [uid, sid] of Object.entries(onlineUsers)) {
+          if (sid === socket.id && uid !== userId) {
+            delete onlineUsers[uid];
+          }
+        }
         onlineUsers[userId] = socket.id;
         io.emit('online_users', Object.keys(onlineUsers));
       }
@@ -48,18 +54,13 @@ export const setupChatSocket = (io: Server) => {
           },
         });
 
-        // Emit to sender
+        // 1. Emit to the sender socket
         socket.emit('new_message', newMsg);
 
-        // Emit to receiver if online
+        // 2. Emit to receiver if online and on a different socket
         const receiverSocketId = onlineUsers[receiverId];
-        if (receiverSocketId) {
+        if (receiverSocketId && receiverSocketId !== socket.id) {
           io.to(receiverSocketId).emit('new_message', newMsg);
-        }
-
-        // Also broadcast to session room if attached
-        if (sessionId) {
-          socket.to(`session_${sessionId}`).emit('new_message', newMsg);
         }
       } catch (err) {
         console.error('Socket message error:', err);
@@ -69,14 +70,14 @@ export const setupChatSocket = (io: Server) => {
     // Typing indicator
     socket.on('typing', ({ senderId, receiverId }: { senderId: string; receiverId: string }) => {
       const receiverSocketId = onlineUsers[receiverId];
-      if (receiverSocketId) {
+      if (receiverSocketId && receiverSocketId !== socket.id) {
         io.to(receiverSocketId).emit('user_typing', { userId: senderId });
       }
     });
 
     socket.on('stop_typing', ({ senderId, receiverId }: { senderId: string; receiverId: string }) => {
       const receiverSocketId = onlineUsers[receiverId];
-      if (receiverSocketId) {
+      if (receiverSocketId && receiverSocketId !== socket.id) {
         io.to(receiverSocketId).emit('user_stop_typing', { userId: senderId });
       }
     });

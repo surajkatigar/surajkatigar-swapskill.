@@ -19,6 +19,7 @@ router.post('/auth/login', authCtrl.login);
 router.post('/auth/logout', authCtrl.logout);
 router.get('/auth/me', authenticate, authCtrl.getMe);
 router.get('/auth/demo-users', authCtrl.getDemoUsers);
+router.post('/auth/switch-demo', authCtrl.switchDemo);
 
 // User routes
 router.get('/users', userCtrl.getUsers);

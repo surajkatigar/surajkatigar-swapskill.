@@ -61,7 +61,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const switchDemoUser = async (demoUser: User) => {
-    await login(demoUser.email, 'password123');
+    try {
+      const res = await api.post('/auth/switch-demo', { userId: demoUser.id });
+      if (res.data.token) {
+        localStorage.setItem('swapskill_token', res.data.token);
+      }
+      setUser(res.data.user);
+      // Refresh page to ensure clean socket reconnect and fresh data across all views
+      window.location.reload();
+    } catch (err) {
+      console.error('Failed to switch demo user:', err);
+      try {
+        await login(demoUser.email, 'password123');
+        window.location.reload();
+      } catch (loginErr) {
+        console.error('Fallback login failed:', loginErr);
+      }
+    }
   };
 
   return (

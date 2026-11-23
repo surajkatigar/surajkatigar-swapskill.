@@ -25,12 +25,20 @@ export const Navbar: React.FC = () => {
   const [demoUsers, setDemoUsers] = useState<User[]>([]);
   const [showDemoDropdown, setShowDemoDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
     api.get('/auth/demo-users')
       .then((res) => setDemoUsers(res.data))
       .catch((e) => console.error(e));
   }, []);
+
+  const handleSwitchUser = async (du: User) => {
+    setIsSwitching(true);
+    setShowDemoDropdown(false);
+    setMobileMenuOpen(false);
+    await switchDemoUser(du);
+  };
 
   const navLinks = [
     { name: 'Explore Skills', path: '/explore', icon: Search },
@@ -110,11 +118,12 @@ export const Navbar: React.FC = () => {
                 <div className="relative hidden sm:block">
                   <button
                     onClick={() => setShowDemoDropdown(!showDemoDropdown)}
-                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-200 bg-white/[0.07] hover:bg-white/[0.12] border border-white/10 transition-colors"
+                    disabled={isSwitching}
+                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-200 bg-white/[0.07] hover:bg-white/[0.12] border border-white/10 transition-colors disabled:opacity-50"
                     title="Switch demo account to test reciprocal skill exchange"
                   >
                     <Users size={13} className="text-indigo-400" />
-                    <span>Switch Persona</span>
+                    <span>{isSwitching ? 'Switching...' : 'Switch Persona'}</span>
                     <ChevronDown size={12} className="text-slate-400" />
                   </button>
 
@@ -127,10 +136,8 @@ export const Navbar: React.FC = () => {
                         {demoUsers.map((du) => (
                           <button
                             key={du.id}
-                            onClick={() => {
-                              switchDemoUser(du);
-                              setShowDemoDropdown(false);
-                            }}
+                            disabled={isSwitching}
+                            onClick={() => handleSwitchUser(du)}
                             className={`w-full text-left px-3 py-2 flex items-center space-x-2.5 text-xs hover:bg-white/[0.06] transition-colors ${
                               user.id === du.id ? 'bg-indigo-600/20 font-semibold text-indigo-300' : 'text-slate-200'
                             }`}
@@ -230,6 +237,36 @@ export const Navbar: React.FC = () => {
               <Shield size={18} />
               <span>Admin Dashboard</span>
             </Link>
+          )}
+
+          {user && demoUsers.length > 0 && (
+            <div className="pt-3 border-t border-white/10 mt-2">
+              <p className="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                Switch Demo Persona
+              </p>
+              <div className="space-y-1">
+                {demoUsers.map((du) => (
+                  <button
+                    key={du.id}
+                    disabled={isSwitching}
+                    onClick={() => handleSwitchUser(du)}
+                    className={`w-full text-left px-3 py-2 rounded-xl flex items-center space-x-2 text-xs transition-colors ${
+                      user.id === du.id ? 'bg-indigo-600/30 text-indigo-300 font-bold' : 'text-slate-300 hover:bg-white/[0.06]'
+                    }`}
+                  >
+                    <img
+                      src={du.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50'}
+                      alt=""
+                      className="w-6 h-6 rounded-full object-cover border border-white/10"
+                    />
+                    <span className="truncate flex-1">{du.name}</span>
+                    <span className="text-[10px] text-amber-300 font-mono font-bold bg-amber-500/20 px-1.5 py-0.5 rounded">
+                      {du.credits}c
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       )}

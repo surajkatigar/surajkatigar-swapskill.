@@ -33,11 +33,28 @@ export const ChatPage: React.FC = () => {
   const [fileName, setFileName] = useState('');
   const [showAttachInput, setShowAttachInput] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // Reliable scroll-to-bottom helper
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior,
+      });
+    } else {
+      messagesEndRef.current?.scrollIntoView({ behavior, block: 'end' });
+    }
   };
+
+  // Automatically scroll to bottom whenever messages list or typing state changes
+  useEffect(() => {
+    scrollToBottom('smooth');
+    const timer = setTimeout(() => scrollToBottom('smooth'), 50);
+    return () => clearTimeout(timer);
+  }, [messages.length, activePartner?.id, isTyping]);
 
   // Fetch active conversations
   const fetchConversations = async () => {
@@ -64,14 +81,15 @@ export const ChatPage: React.FC = () => {
 
   useEffect(() => {
     fetchConversations();
-  }, [partnerParam]);
+  }, [partnerParam, user?.id]);
 
   // Fetch messages for active partner
   const fetchMessages = async (partnerId: string) => {
     try {
       const res = await api.get(`/chat/messages/${partnerId}`);
       setMessages(res.data);
-      scrollToBottom();
+      // Instant scroll on load
+      setTimeout(() => scrollToBottom('auto'), 40);
     } catch (e) {
       console.error(e);
     }
@@ -83,7 +101,7 @@ export const ChatPage: React.FC = () => {
     }
   }, [activePartner?.id]);
 
-  // Socket listener for real-time messages
+  // Socket listener for real-time messages with deduplication
   useEffect(() => {
     if (!socket) return;
 
@@ -92,8 +110,13 @@ export const ChatPage: React.FC = () => {
         activePartner &&
         (msg.senderId === activePartner.id || msg.receiverId === activePartner.id)
       ) {
-        setMessages((prev) => [...prev, msg]);
-        scrollToBottom();
+        setMessages((prev) => {
+          // Avoid duplicate renders if the message already exists in state
+          if (prev.some((m) => m.id === msg.id)) {
+            return prev;
+          }
+          return [...prev, msg];
+        });
       }
       fetchConversations();
     };
@@ -136,19 +159,25 @@ export const ChatPage: React.FC = () => {
     };
 
     // If socket is connected, emit real-time
-    if (socket) {
+    if (socket && socket.connected) {
       socket.emit('send_direct_message', payload);
     } else {
       // Fallback HTTP
-      const res = await api.post('/chat/messages', payload);
-      setMessages((prev) => [...prev, res.data]);
+      try {
+        const res = await api.post('/chat/messages', payload);
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === res.data.id)) return prev;
+          return [...prev, res.data];
+        });
+      } catch (err) {
+        console.error('Failed to send fallback HTTP message:', err);
+      }
     }
 
     setInputContent('');
     setAttachmentUrl('');
     setFileName('');
     setShowAttachInput(false);
-    scrollToBottom();
   };
 
   return (
@@ -245,8 +274,8 @@ export const ChatPage: React.FC = () => {
               )}
             </div>
 
-            {/* Messages Stream */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-black/20">
+            {/* Messages Stream with Ref attached */}
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-black/20 scroll-smooth">
               {messages.length === 0 ? (
                 <div className="py-16 text-center text-xs text-slate-500">
                   No messages exchanged yet. Say hello and introduce what you'd like to learn!
