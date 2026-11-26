@@ -10,49 +10,50 @@ export const HomePage: React.FC = () => {
   return (
     <AstroAssociationTemplate
       brand="SWAPSKiLL."
-      navCta={user ? "Dashboard" : "Join Free"}
+      navCta={user ? "Dashboard" : "Join Free (+2 Credits)"}
       onNavCta={() => navigate(user ? "/matches" : "/register")}
       hero={{
         wordmark: "SwapSkill",
-        issue: "#102",
-        title: "SWAPSKiLL.\nASSOCiATION",
+        issue: "#2026",
+        title: "LEARN ANYTHING.\nTRADE SKILLS.",
         blurb:
-          "Interplanetary exploration can be carried out by many means, from spacecraft and telescopes to a folding chair in a dark field. We do the last part together, every clear night.",
-        credit: "SwapSkill Association · Project designed by its members",
-        primaryCta: user ? "Go to Dashboard" : "Join the association",
-        secondaryCta: "Tonight's sky",
-        hint: "Click the bubbles. They pop.",
+          "The decentralized peer-to-peer skill barter network. Teach what you excel at—coding, design, languages, music—and bank time credits to learn from verified peers worldwide. No money. Pure knowledge exchange.",
+        credit: "SwapSkill Network · Decentralized Knowledge Exchange",
+        primaryCta: user ? "Go to Dashboard" : "Join & Get 2 Free Credits",
+        secondaryCta: "Explore Workshops",
+        hint: "Click the skill bubbles. They pop.",
       }}
       mission={{
-        bandTitle: "SWAPSKiLL.\nASSOCiATION",
-        kicker: "SWAPSKiLL. ASSOCIATION PROJECT",
-        meta: ["SwapSkill. Association project", "#102 daily design", "Designed by members"],
-        title: "A club for people who keep looking up.",
+        bandTitle: "SWAPSKiLL.\nNETWORK",
+        kicker: "PEER-TO-PEER KNOWLEDGE BARTER",
+        meta: ["100% Non-Monetary", "Smart Time Credits", "Verified Practitioners"],
+        title: "Learn directly from practitioners. Teach what you love.",
         body:
-          "We are amateurs in the old sense of the word: we do it for love. Members share telescopes, drive each other to dark sites, log what they see and turn it into open data that real observatories use. No experience needed — just curiosity and a warm coat.",
+          "Bootcamps and private tutors charge thousands of dollars. We believe learning should be collaborative, direct, and accessible to everyone. On SwapSkill, one hour of teaching earns you one credit to spend on learning any topic from peers across the globe.",
         stats: [
-          { value: "1,840+", label: "Members" },
-          { value: "312", label: "Nights logged" },
-          { value: "48,600", label: "Objects catalogued" },
-          { value: "27", label: "Countries" },
+          { value: "5,400+", label: "Exchanges Completed" },
+          { value: "1,840+", label: "Active Members" },
+          { value: "480+", label: "Skills Catalogued" },
+          { value: "100%", label: "Free Peer Barter" },
         ],
       }}
       projectsCopy={{
-        title: "SWAPSKiLL\nASSOCiATION",
-        issue: "102",
-        ribbonText: "swapskill. association",
-        heading: "Projects, numbered like issues.",
+        title: "SWAPSKiLL\nTRACKS",
+        issue: "2026",
+        ribbonText: "peer knowledge · mutual barter",
+        heading: "Curated learning tracks, organized by community practitioners.",
         body:
-          "Interplanetary exploration projects can be carried out using a variety of means and equipment. They require a large amount of patient observation, and they require international cooperation and joint efforts.",
+          "Connect directly with mentors who work in the industry. Practice with real project code, get live feedback on your design systems, and accelerate your craft without paying for courses.",
       }}
       footer={{
-        bandTitle: "SWAPSKiLL.\nASSOCiATION",
-        tagline: "ALL WE CAN FOUND.  ALL CAN BE FOUND.",
-        credit: "SWAPSKILL PROJECT · DESIGNED BY ITS MEMBERS",
+        bandTitle: "SWAPSKiLL.\nNETWORK",
+        tagline: "ALL SKILLS CAN BE SHARED.  ALL CAN BE LEARNED.",
+        credit: "SWAPSKILL · THE DECENTRALIZED PEER SKILL EXCHANGE NETWORK",
         links: [
           { label: "Explore Skills", href: "/explore" },
           { label: "Peer Matches", href: "/matches" },
           { label: "Workshops", href: "/workshops" },
+          { label: "Learning Circles", href: "/circles" },
           { label: "Sign In", href: "/login" },
         ],
       }}
@@ -69,4 +70,5 @@ export const HomePage: React.FC = () => {
   );
 };
 export default HomePage;
+
 

@@ -354,93 +354,93 @@ const SECTION_KEYS = ["home", "mission", "projects", "nights", "join"]
 /* ---------------------------------------------------------------- defaults */
 
 const D_NAV: AstroNavLink[] = [
-  { label: "Mission", target: "mission" },
-  { label: "Projects", target: "projects" },
-  { label: "Nights", target: "nights" },
-  { label: "Join", target: "join" },
+  { label: "How It Works", target: "mission" },
+  { label: "Skill Tracks", target: "projects" },
+  { label: "Workshops", target: "nights" },
+  { label: "Member Card", target: "join" },
 ]
 
 const D_HERO: AstroHero = {
   wordmark: "SwapSkill",
-  issue: "#102",
-  title: "SWAPSKiLL.\nASSOCiATION",
+  issue: "#2026",
+  title: "LEARN ANYTHING.\nTRADE SKILLS.",
   blurb:
-    "Interplanetary exploration can be carried out by many means, from spacecraft and telescopes to a folding chair in a dark field. We do the last part together, every clear night.",
-  credit: "SwapSkill Association · Project designed by its members",
-  primaryCta: "Join the association",
-  secondaryCta: "Tonight's sky",
+    "The decentralized peer-to-peer barter network. Teach what you excel at—coding, design, languages, music—and bank time credits to learn from verified peers worldwide. No money. Pure knowledge exchange.",
+  credit: "SwapSkill Network · Decentralized Knowledge Exchange",
+  primaryCta: "Explore Skills",
+  secondaryCta: "Live Workshops",
   hint: "Click the bubbles. They pop.",
 }
 
 const D_MISSION: AstroMission = {
-  bandTitle: "SWAPSKiLL.\nASSOCiATION",
-  kicker: "SWAPSKiLL. ASSOCIATION PROJECT",
-  meta: ["SwapSkill. Association project", "#102 daily design", "Designed by members"],
-  title: "A club for people who keep looking up.",
+  bandTitle: "SWAPSKiLL.\nNETWORK",
+  kicker: "PEER-TO-PEER KNOWLEDGE BARTER",
+  meta: ["100% Non-Monetary", "Smart Time Credits", "Verified Practitioners"],
+  title: "Learn directly from practitioners. Teach what you love.",
   body:
-    "We are amateurs in the old sense of the word: we do it for love. Members share telescopes, drive each other to dark sites, log what they see and turn it into open data that real observatories use. No experience needed — just curiosity and a warm coat.",
+    "Bootcamps and private tutors charge thousands of dollars. We believe learning should be collaborative, direct, and accessible to everyone. On SwapSkill, one hour of teaching earns you one credit to spend on learning any topic from peers across the globe.",
   stats: [
-    { value: "1,840+", label: "Members" },
-    { value: "312", label: "Nights logged" },
-    { value: "48,600", label: "Objects catalogued" },
-    { value: "27", label: "Countries" },
+    { value: "5,400+", label: "Exchanges Completed" },
+    { value: "1,840+", label: "Active Members" },
+    { value: "480+", label: "Skills Catalogued" },
+    { value: "100%", label: "Free Peer Barter" },
   ],
 }
 
 const D_PROJECTS: AstroProject[] = [
   {
-    code: "#099",
-    title: "Dark-Sky Census",
-    summary: "Members measure how bright the night is above their own street.",
+    code: "#01",
+    title: "Full-Stack & Systems",
+    summary: "Modern React 19, Node.js, Python, Rust, and scalable cloud architectures.",
     detail:
-      "A pocket meter, a free app and ten minutes after midnight. Every reading lands on a public map that city planners and lighting engineers use to argue for darker streets.",
+      "Learn how seasoned developers structure production codebases, write unit tests, and deploy resilient web apps. Complete real pull requests together.",
     status: "ongoing",
-    progress: 0.74,
-    goal: "7,412 of 10,000 readings",
-    cta: "Log a reading",
+    progress: 0.88,
+    goal: "1,420 peer sessions completed",
+    cta: "Find a Coding Mentor",
   },
   {
-    code: "#100",
-    title: "Lunar Sketchbook",
-    summary: "One crater a night, drawn by hand at the eyepiece.",
+    code: "#02",
+    title: "UI/UX & Design Systems",
+    summary: "Figma token workflows, design systems, 3D interaction, and product strategy.",
     detail:
-      "Two hundred and twelve pencil drawings of the terminator, bound into a printed atlas. The book is sold out; the scans are free to download from the archive.",
-    status: "archived",
-    progress: 1,
-    goal: "212 drawings published",
-    cta: "Browse the atlas",
-  },
-  {
-    code: "#101",
-    title: "Meteor Radio Watch",
-    summary: "Listening for meteors through the clouds with home-built receivers.",
-    detail:
-      "Fourteen stations count forward-scatter echoes from a distant broadcast transmitter, day and night, rain or shine. Build kits are lent out from the club library.",
+      "Portfolio reviews, live Figma component architecture sessions, and end-to-end design handoffs with senior product designers.",
     status: "ongoing",
-    progress: 0.42,
-    goal: "6 of 14 stations online this month",
-    cta: "Borrow a kit",
+    progress: 0.76,
+    goal: "980 design hours exchanged",
+    cta: "Explore Design Mentors",
   },
   {
-    code: "#102",
-    title: "All Can Be Found",
-    summary: "The daily design project: one object, one poster, every day.",
+    code: "#03",
+    title: "Conversational Fluency",
+    summary: "Spanish, Japanese, German, French, and Mandarin with native speakers.",
     detail:
-      "Pitch a planet, a nebula or a lost probe. Each day a member designs its poster, and every poster ships with the coordinates to find the real thing in the sky.",
+      "Ditch rote grammar drills. Practice real-world conversation with native speakers who want to learn your native language or technical skills.",
+    status: "ongoing",
+    progress: 0.94,
+    goal: "1,850 conversational hours",
+    cta: "Start a Language Barter",
+  },
+  {
+    code: "#04",
+    title: "Audio & Creative Arts",
+    summary: "Music production in Ableton, sound design, video editing, and motion graphics.",
+    detail:
+      "Master mixing, synthesizers, and video post-production. Trade audio stems and feedback directly inside creative collaborative sessions.",
     status: "open",
-    progress: 0.1,
-    goal: "Open call — 102 posters so far",
-    cta: "Pitch an object",
+    progress: 0.65,
+    goal: "620 creative projects made",
+    cta: "Browse Creative Mentors",
   },
 ]
 
 const D_PROJECTS_COPY: AstroProjects = {
-  title: "SWAPSKiLL\nASSOCiATION",
-  issue: "102",
-  ribbonText: "swapskill. association",
-  heading: "Projects, numbered like issues.",
+  title: "SWAPSKiLL\nTRACKS",
+  issue: "2026",
+  ribbonText: "peer knowledge · mutual barter",
+  heading: "Curated learning tracks, organized by community practitioners.",
   body:
-    "Interplanetary exploration projects can be carried out using a variety of means and equipment. They require a large amount of patient observation, and they require international cooperation and joint efforts.",
+    "Connect directly with mentors who work in the industry. Practice with real project code, get live feedback on your design systems, and accelerate your craft without paying for courses.",
 }
 
 function inDays(n: number): string {
@@ -450,45 +450,46 @@ function inDays(n: number): string {
 }
 
 const D_NIGHTS: AstroNight[] = [
-  { date: inDays(4), time: "20:30", title: "Saturn & the autumn sky", place: "Hilltop field, north gate", kind: "Star party", target: "Saturn's rings", seats: 40, going: 27 },
-  { date: inDays(9), time: "19:00", title: "How to read a star chart", place: "Library annex, room 2", kind: "Workshop", target: "Planisphere basics", seats: 18, going: 15 },
-  { date: inDays(16), time: "21:00", title: "Deep-sky marathon", place: "Dark site, 40 min drive", kind: "Star party", target: "Andromeda galaxy", seats: 24, going: 9 },
-  { date: inDays(23), time: "19:30", title: "What the probes found", place: "Town hall auditorium", kind: "Talk", target: "Outer-planet missions", seats: 120, going: 64 },
-  { date: inDays(30), time: "22:00", title: "Meteor shower watch", place: "Hilltop field, north gate", kind: "Star party", target: "Peak hour radiant", seats: 60, going: 31 },
+  { date: inDays(3), time: "18:30", title: "Modern React 19 & Next.js Architecture", place: "Online Room · 1-on-1 / Group", kind: "Workshop", target: "Frontend & UI Architecture", seats: 30, going: 24 },
+  { date: inDays(6), time: "19:00", title: "Figma Token Systems & Design Tokens", place: "Figma Jam & Live Stream", kind: "Design Lab", target: "UI/UX & Component Systems", seats: 25, going: 19 },
+  { date: inDays(10), time: "20:00", title: "Conversational Spanish Practice Circle", place: "Discord Audio Stage", kind: "Language Circle", target: "Intermediate & Advanced Spanish", seats: 15, going: 12 },
+  { date: inDays(15), time: "17:30", title: "Python for Data Science & Agent Workflows", place: "Jupyter Notebook & Meet", kind: "Code Review", target: "Data Pipelines & AI Logic", seats: 40, going: 35 },
+  { date: inDays(20), time: "21:00", title: "Ableton Live Sound Design & Mixing Stems", place: "Audio Stream & DAW Collab", kind: "Masterclass", target: "Synthesis & Audio Engineering", seats: 20, going: 16 },
 ]
 
 const D_TIERS: AstroTier[] = [
-  { name: "Stargazer", price: "Free", blurb: "For the curious.", perks: ["Monthly sky notes", "Public star parties", "Members' forum"] },
+  { name: "Learner", price: "Free", blurb: "For anyone starting their journey.", perks: ["2 free starter time credits", "Book 1-on-1 peer sessions", "Access community workshops", "Public peer review profile"] },
   {
-    name: "Observer",
-    price: "€6",
-    period: "/mo",
-    blurb: "For regulars at the eyepiece.",
-    perks: ["Everything in Stargazer", "Telescope lending library", "Dark-site trips", "Project #102 access"],
+    name: "Practitioner",
+    price: "Free",
+    period: "/Active",
+    blurb: "For peers who teach and learn.",
+    perks: ["Earn 1 credit per teaching hour", "Host group workshops", "Access learning circles", "Verified practitioner badge"],
     featured: true,
   },
-  { name: "Patron", price: "€18", period: "/mo", blurb: "Keeps the domes open.", perks: ["Everything in Observer", "Your name on the dome wall", "Astrophoto workshops", "Two guest passes"] },
+  { name: "Community Mentor", price: "Honorary", period: "/Top Peer", blurb: "Recognized top contributors.", perks: ["Featured on peer leaderboard", "Priority matchmaking", "Unlimited workshop participants", "Custom mentor profile link"] },
 ]
 
 const D_JOIN: AstroJoin = {
-  tag: "Membership",
-  title: "Get your card. Find everything.",
-  body: "Pick a tier, type your name and watch your card print. You can change tiers any time.",
+  tag: "Membership Pass",
+  title: "Issue your SwapSkill Member Pass.",
+  body: "Pick your tier, enter your name, and your personalized member card will be generated in real-time. Start exchanging skills today.",
   namePlaceholder: "Your name",
-  emailPlaceholder: "you@domain.com",
-  button: "Print my card",
-  success: "Welcome aboard, {name}. Your card is in your inbox.",
+  emailPlaceholder: "you@example.com",
+  button: "Claim Member Pass & 2 Credits",
+  success: "Welcome to the network, {name}! Your pass is activated with 2 free credits.",
 }
 
 const D_FOOTER: AstroFooter = {
-  bandTitle: "SWAPSKiLL.\nASSOCiATION",
-  tagline: "ALL WE CAN FOUND.  ALL CAN BE FOUND.",
-  credit: "SWAPSKILL PROJECT · DESIGNED BY ITS MEMBERS",
+  bandTitle: "SWAPSKiLL.\nNETWORK",
+  tagline: "ALL SKILLS CAN BE SHARED.  ALL CAN BE LEARNED.",
+  credit: "SWAPSKILL · THE DECENTRALIZED PEER SKILL EXCHANGE NETWORK",
   links: [
-    { label: "Newsletter", href: "#" },
-    { label: "Archive", href: "#" },
-    { label: "Press kit", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "Explore Skills", href: "/explore" },
+    { label: "Peer Matches", href: "/matches" },
+    { label: "Workshops", href: "/workshops" },
+    { label: "Learning Circles", href: "/circles" },
+    { label: "Sign In", href: "/login" },
   ],
 }
 
@@ -973,6 +974,24 @@ function Scope() {
   )
 }
 
+function SkillIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    </svg>
+  )
+}
+
+function CreditCoinIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 6v12M9 9h6" />
+    </svg>
+  )
+}
+
 function ThemeIcon({ dark }: { dark: boolean }) {
   return dark ? (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -1331,6 +1350,36 @@ function Moon({ fraction, colors, uid, size = 220, spin = true }: { fraction: nu
   )
 }
 
+function CreditOrb({ hours, colors, uid, size = 220, spin = true }: { hours: number; colors: string[]; uid: string; size?: number; spin?: boolean }) {
+  const dots = React.useMemo(() => buildBubbles(31, 100, 100, colors.length, 1.4, 1.1), [colors.length])
+  const id = uid + "-credit"
+  return (
+    <svg className="aa-sky-moon" width={size} height={size} viewBox="-70 -70 140 140" aria-hidden="true">
+      <defs>
+        <clipPath id={id}>
+          <circle r="50" />
+        </clipPath>
+      </defs>
+      <g className={spin ? "aa-orbit-spin" : undefined}>
+        <circle r="64" fill="none" stroke="var(--aa-line-strong)" strokeWidth="1" strokeDasharray="2 6" strokeLinecap="round" />
+        <circle cx="64" r="4.5" fill="var(--aa-blue)" />
+      </g>
+      <circle r="50" fill="var(--aa-moon)" />
+      <g clipPath={"url(#" + id + ")"}>
+        <rect x="-50" y="-50" width="100" height="100" fill={colors[0]} />
+        {dots.map((b, i) => (
+          <circle key={i} cx={b.x - 50} cy={b.y - 50} r={b.r} fill={colors[b.c % colors.length]} />
+        ))}
+      </g>
+      <circle r="50" fill="none" stroke="var(--aa-line-strong)" strokeWidth="1.6" />
+      <g style={{ transform: "scale(1.2)" }}>
+        <path d="M-10 -4h20M4 -9l6 5-6 5" stroke="var(--aa-paper)" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <path d="M10 4h-20M-4 9l-6-5 6-5" stroke="var(--aa-paper)" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </g>
+    </svg>
+  )
+}
+
 function MiniMoon({ fraction }: { fraction: number }) {
   return (
     <svg width="14" height="14" viewBox="-7 -7 14 14" aria-hidden="true">
@@ -1397,8 +1446,8 @@ export default function AstroAssociationTemplate({
   mission,
   projects = D_PROJECTS,
   projectsCopy,
-  nightsTag = "Observation nights",
-  nightsTitle = "Clear skies, together.",
+  nightsTag = "Live Sessions",
+  nightsTitle = "Live Workshops & Peer Circles",
   nights = D_NIGHTS,
   tiers = D_TIERS,
   join,
@@ -1560,7 +1609,8 @@ export default function AstroAssociationTemplate({
     el.style.setProperty("--py", (((e.clientY - r.top) / r.height) * 100).toFixed(1) + "%")
   }
 
-  /* sky */
+  /* time credits simulator */
+  const [creditHours, setCreditHours] = React.useState(3)
   const baseDay = React.useMemo(() => {
     const d = skyDate ? new Date(skyDate) : new Date()
     return isNaN(d.getTime()) ? new Date() : d
@@ -1954,34 +2004,32 @@ export default function AstroAssociationTemplate({
             <div className="aa-nights">
               <div className="aa-sky">
                 <div className="aa-sky-row">
-                  <span className="aa-label">Sky tonight</span>
-                  <button type="button" className="aa-today" data-on={dayOffset !== 0} onClick={() => setDayOffset(0)} disabled={dayOffset === 0}>
-                    {dayOffset === 0 ? "Today" : "Back to today"}
-                  </button>
+                  <span className="aa-label">Credit Escrow System</span>
+                  <span className="aa-today" style={{ cursor: "default", opacity: 0.9 }}>1 hr = 1 Credit</span>
                 </div>
-                <Moon fraction={moon.fraction} colors={colors} uid={uid} spin={!reduced} />
+                <CreditOrb hours={creditHours} colors={colors} uid={uid} spin={!reduced} />
                 <div style={{ textAlign: "center" }}>
-                  <h3 aria-live="polite">{moon.name}</h3>
+                  <h3 aria-live="polite">{creditHours} Hour{creditHours > 1 ? "s" : ""} Knowledge Trade</h3>
                   <span className="aa-mono" style={{ color: "var(--aa-muted)" }}>
-                    {WEEKDAYS[skyDay.getDay()]} {String(skyDay.getDate()).padStart(2, "0")} {MONTHS[skyDay.getMonth()]} {skyDay.getFullYear()}
+                    Zero money exchanged · Smart Escrow
                   </span>
                 </div>
                 <div className="aa-sky-row" style={{ justifyContent: "center", gap: 14 }}>
-                  <button type="button" className="aa-step" aria-label="Previous night" onClick={() => setDayOffset((d) => d - 1)}>
+                  <button type="button" className="aa-step" aria-label="Fewer hours" onClick={() => setCreditHours((h) => Math.max(1, h - 1))}>
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M10 3L5 8l5 5" />
                     </svg>
                   </button>
                   <input
                     type="range"
-                    min={-15}
-                    max={30}
-                    value={dayOffset}
-                    onChange={(e) => setDayOffset(+e.target.value)}
-                    aria-label="Scrub nights"
+                    min={1}
+                    max={12}
+                    value={creditHours}
+                    onChange={(e) => setCreditHours(+e.target.value)}
+                    aria-label="Simulate hours to trade"
                     style={{ accentColor: "var(--aa-blue)", width: "min(160px,40cqi)" }}
                   />
-                  <button type="button" className="aa-step" aria-label="Next night" onClick={() => setDayOffset((d) => d + 1)}>
+                  <button type="button" className="aa-step" aria-label="More hours" onClick={() => setCreditHours((h) => Math.min(12, h + 1))}>
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M6 3l5 5-5 5" />
                     </svg>
@@ -1989,28 +2037,28 @@ export default function AstroAssociationTemplate({
                 </div>
                 <div className="aa-sky-facts">
                   <div>
-                    <b>{Math.round(moon.illumination * 100)}%</b>
+                    <b>{creditHours}h</b>
                     <span className="aa-mono" style={{ color: "var(--aa-muted)" }}>
-                      Lit
+                      Teach
                     </span>
                   </div>
                   <div>
-                    <b>{moon.waxing ? Math.round(moon.daysToFull) : Math.round(moon.daysToNew)}d</b>
+                    <b>+{creditHours}</b>
                     <span className="aa-mono" style={{ color: "var(--aa-muted)" }}>
-                      {moon.waxing ? "To full" : "To new"}
+                      Credits
                     </span>
                   </div>
                   <div>
-                    <b>{moonlight}</b>
+                    <b>$0.00</b>
                     <span className="aa-mono" style={{ color: "var(--aa-muted)" }}>
-                      Sky
+                      Cost
                     </span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <div className="aa-filters" role="group" aria-label="Filter nights">
+                <div className="aa-filters" role="group" aria-label="Filter workshops">
                   {kinds.map((k) => (
                     <button key={k} type="button" className="aa-filter" aria-pressed={kind === k} onClick={() => setKind(k)}>
                       {k}
@@ -2042,15 +2090,13 @@ export default function AstroAssociationTemplate({
                               {n.place}
                             </span>
                             <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                              <Scope />
+                              <SkillIcon />
                               {n.target}
                             </span>
-                            {d && (
-                              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: "var(--aa-blue)" }} title={moonPhase(d.ms).name}>
-                                <MiniMoon fraction={moonPhase(d.ms).fraction} />
-                                <span style={{ color: "var(--aa-muted)" }}>{Math.round(moonPhase(d.ms).illumination * 100)}% moon</span>
-                              </span>
-                            )}
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: "var(--aa-blue)" }}>
+                              <CreditCoinIcon />
+                              <span style={{ color: "var(--aa-muted)" }}>1 Credit · Escrow</span>
+                            </span>
                           </div>
                         </div>
                         <div className="aa-event-act">
