@@ -10,6 +10,7 @@ import {
   Coins,
   Star,
   ExternalLink,
+  Edit3,
 } from 'lucide-react';
 import api from '../services/api';
 import { SessionBooking } from '../types';
@@ -87,6 +88,20 @@ export const SessionsPage: React.FC = () => {
       showToast('Session cancelled and escrow refunded.');
     } catch (err: any) {
       showToast(err.response?.data?.error || 'Failed to cancel session', 'error');
+    }
+  };
+
+  const handleUpdateMeetingLink = async (sessionId: string, currentLink?: string) => {
+    const defaultVal = currentLink || 'https://meet.google.com/new';
+    const newLink = prompt('Enter or paste Google Meet link for this session:\n(You can use https://meet.google.com/new to generate an instant link)', defaultVal);
+    if (newLink && newLink.trim()) {
+      try {
+        await api.put(`/bookings/${sessionId}/meeting-link`, { meetingLink: newLink.trim() });
+        showToast('Google Meet link updated successfully!');
+        await fetchSessions();
+      } catch (err: any) {
+        showToast(err.response?.data?.error || 'Failed to update meeting link', 'error');
+      }
     }
   };
 
@@ -287,16 +302,35 @@ export const SessionsPage: React.FC = () => {
                   {/* Accepted state */}
                   {session.status === 'ACCEPTED' && (
                     <>
-                      {session.meetingLink && (
-                        <a
-                          href={session.meetingLink}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md shadow-emerald-600/25 transition-all hover:scale-105 active:scale-100"
+                      {session.meetingLink ? (
+                        <div className="flex items-center space-x-1.5">
+                          <a
+                            href={session.meetingLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-md shadow-emerald-600/25 transition-all hover:scale-105 active:scale-100"
+                          >
+                            <Video size={14} />
+                            <span>{session.meetingLink.includes('meet.google') ? 'Join Google Meet' : 'Join Video Room'}</span>
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateMeetingLink(session.id, session.meetingLink)}
+                            title="Edit / Change Google Meet Link"
+                            className="p-2 bg-white/[0.08] hover:bg-white/[0.15] text-slate-300 hover:text-white border border-white/10 rounded-xl text-xs transition-colors"
+                          >
+                            <Edit3 size={13} />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateMeetingLink(session.id)}
+                          className="px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors"
                         >
-                          <Video size={14} />
-                          <span>Join Video Room</span>
-                        </a>
+                          <Video size={13} />
+                          <span>Add Google Meet Link</span>
+                        </button>
                       )}
 
                       <button

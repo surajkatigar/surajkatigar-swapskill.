@@ -11,6 +11,7 @@ import {
   CheckCheck,
   Circle,
   X,
+  Video,
 } from 'lucide-react';
 import api from '../services/api';
 import { ChatMessage, User } from '../types';
@@ -180,6 +181,40 @@ export const ChatPage: React.FC = () => {
     setShowAttachInput(false);
   };
 
+  const handleStartGoogleMeet = () => {
+    if (!activePartner || !user) return;
+    window.open('https://meet.google.com/new', '_blank');
+
+    const promptText = prompt(
+      `Google Meet has been opened in a new tab!\n\nOnce your room is open, paste your meeting link here to send it to ${activePartner.name} (or leave as default):`,
+      'https://meet.google.com/new'
+    );
+
+    if (promptText && promptText.trim()) {
+      const meetLink = promptText.trim();
+      const payload = {
+        senderId: user.id,
+        receiverId: activePartner.id,
+        sessionId: sessionParam || undefined,
+        content: `📹 Let's jump on Google Meet: ${meetLink}`,
+      };
+
+      if (socket && socket.connected) {
+        socket.emit('send_direct_message', payload);
+      } else {
+        api
+          .post('/chat/messages', payload)
+          .then((res) => {
+            setMessages((prev) => {
+              if (prev.some((m) => m.id === res.data.id)) return prev;
+              return [...prev, res.data];
+            });
+          })
+          .catch(() => {});
+      }
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-slate-100">
       <div className="bg-[#0d0d14]/85 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl overflow-hidden h-[82vh] flex">
@@ -266,12 +301,24 @@ export const ChatPage: React.FC = () => {
                 </div>
               </div>
 
-              {sessionParam && (
-                <div className="flex items-center space-x-1.5 px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 rounded-xl text-xs font-semibold text-indigo-300">
-                  <Calendar size={13} />
-                  <span>Session Linked</span>
-                </div>
-              )}
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={handleStartGoogleMeet}
+                  title="Start Google Meet video room"
+                  className="flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl text-xs font-bold transition-all hover:scale-105 active:scale-100"
+                >
+                  <Video size={13} className="text-emerald-400" />
+                  <span>Google Meet</span>
+                </button>
+
+                {sessionParam && (
+                  <div className="flex items-center space-x-1.5 px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 rounded-xl text-xs font-semibold text-indigo-300">
+                    <Calendar size={13} />
+                    <span>Session Linked</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Messages Stream with Ref attached */}

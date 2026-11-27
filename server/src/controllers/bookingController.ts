@@ -34,8 +34,8 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
         scheduledAt: new Date(scheduledAt),
         durationMinutes: durationMinutes ? parseInt(durationMinutes) : 30,
         goalDescription: goalDescription || '',
-        meetingLink: meetingLink || 'https://meet.jit.si/SwapSkill-' + Math.random().toString(36).substring(7),
-        location: location || 'Online Video Room',
+        meetingLink: meetingLink && meetingLink !== 'google-meet' ? meetingLink : 'https://meet.google.com/new',
+        location: location || 'Google Meet',
         status: 'PENDING',
         escrowCreditLocked: false,
       },
@@ -319,5 +319,43 @@ export const getMyBookings = async (req: AuthRequest, res: Response): Promise<vo
     res.json(bookings);
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to fetch sessions' });
+  }
+};
+
+export const updateMeetingLink = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const currentUserId = req.user!.id;
+    const { id } = req.params;
+    const { meetingLink } = req.body;
+
+    if (!meetingLink) {
+      res.status(400).json({ error: 'Meeting link is required' });
+      return;
+    }
+
+    const booking = await prisma.sessionBooking.findUnique({ where: { id } });
+    if (!booking) {
+      res.status(404).json({ error: 'Session booking not found' });
+      return;
+    }
+
+    if (booking.learnerId !== currentUserId && booking.teacherId !== currentUserId) {
+      res.status(403).json({ error: 'Unauthorized to update this session link' });
+      return;
+    }
+
+    const updated = await prisma.sessionBooking.update({
+      where: { id },
+      data: { meetingLink: meetingLink.trim() },
+      include: {
+        learner: { select: { id: true, name: true, avatar: true } },
+        teacher: { select: { id: true, name: true, avatar: true } },
+      },
+    });
+
+    res.json({ message: 'Meeting link updated successfully', booking: updated });
+  } catch (error: any) {
+    console.error('updateMeetingLink error:', error);
+    res.status(500).json({ error: 'Failed to update meeting link' });
   }
 };

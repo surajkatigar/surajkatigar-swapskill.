@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Calendar, Clock, Target, Link as LinkIcon, ShieldCheck, AlertCircle } from 'lucide-react';
+import { X, Calendar, Clock, Target, Link as LinkIcon, ShieldCheck, AlertCircle, Video } from 'lucide-react';
 import api from '../services/api';
 import { User } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -24,7 +24,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('18:00');
   const [goalDescription, setGoalDescription] = useState('');
-  const [location, setLocation] = useState('SwapSkill In-App Live Meeting');
+  const [location, setLocation] = useState('Google Meet');
+  const [meetingLink, setMeetingLink] = useState('https://meet.google.com/new');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -52,6 +53,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         durationMinutes: 30,
         goalDescription,
         location,
+        meetingLink: meetingLink.trim() || 'https://meet.google.com/new',
       });
 
       await refreshUser();
@@ -168,20 +170,34 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              <span className="flex items-center space-x-1.5">
-                <LinkIcon size={13} className="text-indigo-400" />
-                <span>Session Location / Mode</span>
+          {/* Google Meet Connection */}
+          <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-3.5 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="flex items-center space-x-1.5 text-xs font-semibold text-emerald-300">
+                <Video size={15} className="text-emerald-400" />
+                <span>Google Meet Video Session</span>
               </span>
-            </label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="SwapSkill Online Video Room or Campus Library"
-              className="w-full px-3 py-2 text-sm border border-white/10 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 focus:outline-hidden bg-white/[0.06] text-white placeholder-slate-500"
-            />
+              <a
+                href="https://meet.google.com/new"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 underline flex items-center space-x-1 bg-emerald-900/40 px-2 py-0.5 rounded-md border border-emerald-500/30 transition-colors"
+              >
+                <span>+ Create Google Meet</span>
+              </a>
+            </div>
+            <div>
+              <input
+                type="url"
+                value={meetingLink}
+                onChange={(e) => setMeetingLink(e.target.value)}
+                placeholder="https://meet.google.com/xxx-yyyy-zzz (or leave default to open instantly)"
+                className="w-full px-3 py-2 text-xs border border-emerald-500/30 rounded-xl focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 focus:outline-hidden bg-black/40 text-emerald-100 placeholder-emerald-400/50 font-mono"
+              />
+              <p className="text-[10px] text-emerald-400/80 mt-1">
+                Both you and {teacher.name} can join this Google Meet directly from your Sessions page once confirmed.
+              </p>
+            </div>
           </div>
 
           {/* Time & Escrow Details */}

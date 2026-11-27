@@ -41,6 +41,7 @@ router.put('/bookings/:id/accept', authenticate, bookingCtrl.acceptBooking);
 router.put('/bookings/:id/decline', authenticate, bookingCtrl.declineBooking);
 router.put('/bookings/:id/complete', authenticate, bookingCtrl.completeBooking);
 router.put('/bookings/:id/cancel', authenticate, bookingCtrl.cancelBooking);
+router.put('/bookings/:id/meeting-link', authenticate, bookingCtrl.updateMeetingLink);
 
 // Real-Time Chat
 router.get('/chat/conversations', authenticate, chatCtrl.getConversations);
