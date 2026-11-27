@@ -185,14 +185,14 @@ export const getDemoUsers = async (_req: Request, res: Response): Promise<void> 
 
 export const switchDemo = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { userId } = req.body;
-    if (!userId) {
-      res.status(400).json({ error: 'User ID is required' });
+    const { userId, email } = req.body;
+    if (!userId && !email) {
+      res.status(400).json({ error: 'User ID or Email is required' });
       return;
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: userId ? { id: userId } : { email },
       include: {
         skills: true,
         portfolio: true,
