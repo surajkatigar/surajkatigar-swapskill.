@@ -26,6 +26,7 @@ RUN cd client && npm run build
 # Default environment variables
 ENV PORT=5000
 ENV NODE_ENV=production
+ENV DATABASE_URL="file:./dev.db"
 ENV JWT_SECRET="swapskill_super_secret_jwt_key_2026_secure"
 
 EXPOSE 5000
