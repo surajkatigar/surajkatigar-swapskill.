@@ -1,13 +1,11 @@
-import GeometricBackground from "@/components/ui/geometric";
+import App1 from "@/components/ui/app-1";
 
-export default function GeometricBackgroundExample() {
+export function App1Demo() {
   return (
-    <GeometricBackground className="flex w-full h-screen justify-center items-center">
-      <div className="text-center space-y-4 lg:space-y-6 z-10">
-        <div className="text-2xl lg:text-4xl text-white/80">
-          Geometric background
-        </div>
-      </div>
-    </GeometricBackground>
+    <div className="h-screen w-full overflow-auto">
+      <App1 />
+    </div>
   );
 }
+
+export default App1Demo;

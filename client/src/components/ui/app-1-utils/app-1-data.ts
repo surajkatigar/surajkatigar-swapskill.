@@ -35,7 +35,7 @@ export const app1Projects = [
     id: "p-1",
     name: "Interactive Python Mentorship",
     status: "In progress" as const,
-    description: "Mentoring 4 developers in async concurrency & FastAPI patterns",
+    description: "Mentoring developers in async concurrency & FastAPI patterns",
     progress: 78,
     dueDate: "Dec 12",
     team: [
@@ -71,30 +71,42 @@ export const app1Projects = [
 export const app1Activity = [
   {
     id: "act-1",
-    title: "Session Completed",
-    description: "Completed 60-min Rust fundamentals session with David R.",
+    person: {
+      name: "Chloe Davis",
+      initials: "CD",
+      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&fit=crop&q=80",
+    },
+    action: "completed a 60-min Rust fundamentals session with David R.",
     time: "25 minutes ago",
-    type: "session",
   },
   {
     id: "act-2",
-    title: "Skill Credit Released",
-    description: "Received 1.5 SwapSkill tokens via smart escrow verification.",
+    person: {
+      name: "Marcus Vance",
+      initials: "MV",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&fit=crop&q=80",
+    },
+    action: "released 1.5 SwapSkill tokens via smart escrow verification.",
     time: "2 hours ago",
-    type: "credit",
   },
   {
     id: "act-3",
-    title: "New Match Request",
-    description: "Sarah K. requested swap for Advanced Docker Orchestration.",
+    person: {
+      name: "Sarah Kim",
+      initials: "SK",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&fit=crop&q=80",
+    },
+    action: "requested a skill swap for Advanced Docker Orchestration.",
     time: "4 hours ago",
-    type: "match",
   },
   {
     id: "act-4",
-    title: "Review Received (5.0 ★)",
-    description: '"Incredible mentor! Clarified state machines and concurrency instantly."',
+    person: {
+      name: "David Ross",
+      initials: "DR",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&fit=crop&q=80",
+    },
+    action: 'left a 5.0 ★ review: "Clarified state machines and concurrency instantly!"',
     time: "Yesterday",
-    type: "review",
   },
 ];

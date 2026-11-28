@@ -42,6 +42,7 @@ import {
   app1User,
 } from "@/components/ui/app-1-utils/app-1-data";
 import { App1Sidebar } from "@/components/ui/app-1-utils/app-1-sidebar";
+import { useAuth } from "@/context/AuthContext";
 
 const STATS = [
   {
@@ -72,6 +73,16 @@ const STATUS_VARIANT = {
 } as const;
 
 export function App1() {
+  const { user } = useAuth();
+  const userName = user?.name || app1User.name;
+  const userAvatar = user?.avatar || app1User.avatar;
+  const userInitials = userName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <SidebarProvider>
       <App1Sidebar />
@@ -85,7 +96,7 @@ export function App1() {
         <header className="sticky top-0 z-10 flex h-16 items-center gap-3 border-b bg-background px-4 sm:px-6">
           <SidebarTrigger aria-label="Toggle navigation" />
           <h1 className="truncate text-lg font-semibold">
-            Welcome back, {app1User.name.split(" ")[0]}
+            Welcome back, {userName.split(" ")[0]}
           </h1>
           <div className="ml-auto flex items-center gap-1">
             <Button variant="ghost" size="icon" aria-label="Search">
@@ -94,13 +105,13 @@ export function App1() {
             <Button variant="ghost" size="icon" aria-label="Notifications">
               <Bell className="h-4 w-4" />
             </Button>
-            <Avatar className="ml-1 size-8">
+            <Avatar className="ml-1 h-8 w-8">
               <AvatarImage
-                src={app1User.avatar}
-                alt={app1User.name}
+                src={userAvatar}
+                alt={userName}
                 className="object-[50%_15%]"
               />
-              <AvatarFallback>{app1User.initials}</AvatarFallback>
+              <AvatarFallback>{userInitials}</AvatarFallback>
             </Avatar>
           </div>
         </header>
@@ -250,25 +261,38 @@ export function App1() {
             <Card>
               <CardHeader>
                 <CardTitle>Recent activity</CardTitle>
-                <CardDescription>Latest updates on your mentorship and swaps</CardDescription>
+                <CardDescription>Latest updates from your team</CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col gap-4">
-                {app1Activity.map((activity) => (
-                  <div
-                    key={activity.id}
-                    className="flex items-start justify-between gap-4 border-b pb-3 last:border-b-0 last:pb-0"
-                  >
-                    <div className="flex flex-col gap-0.5">
-                      <p className="text-sm font-medium">{activity.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {activity.description}
-                      </p>
-                    </div>
-                    <span className="shrink-0 text-xs text-muted-foreground">
-                      {activity.time}
-                    </span>
-                  </div>
-                ))}
+              <CardContent>
+                <ol className="flex flex-col gap-4">
+                  {app1Activity.map((entry) => (
+                    <li key={entry.id} className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={entry.person.avatar}
+                          alt={entry.person.name}
+                          className="object-[50%_15%]"
+                        />
+                        <AvatarFallback className="text-xs">
+                          {entry.person.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm leading-snug">
+                          <span className="font-medium">
+                            {entry.person.name}
+                          </span>{" "}
+                          <span className="text-muted-foreground">
+                            {entry.action}
+                          </span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {entry.time}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
               </CardContent>
             </Card>
           </div>
