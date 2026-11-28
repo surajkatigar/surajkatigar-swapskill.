@@ -17,7 +17,7 @@ export const LoginPage: React.FC = () => {
     setError('');
     try {
       await login(email, password);
-      navigate('/dashboard');
+      navigate('/matches');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Invalid email or password');
     } finally {
@@ -29,7 +29,7 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
     try {
       await login(demoEmail, 'password123');
-      navigate('/dashboard');
+      navigate('/matches');
     } catch (err: any) {
       setError('Login failed');
     } finally {

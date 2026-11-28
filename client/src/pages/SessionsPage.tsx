@@ -17,6 +17,7 @@ import { SessionBooking } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { ReviewModal } from '../components/ReviewModal';
 import { useNavigate } from 'react-router-dom';
+import { DashboardMetricsSection } from '@/components/ui/app-1';
 
 export const SessionsPage: React.FC = () => {
   const { user, refreshUser } = useAuth();
@@ -124,6 +125,9 @@ export const SessionsPage: React.FC = () => {
           {toast.msg}
         </div>
       )}
+
+      {/* Universal Dashboard Metrics & Throughput Chart */}
+      <DashboardMetricsSection />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

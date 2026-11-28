@@ -72,9 +72,10 @@ const STATUS_VARIANT = {
   Planning: "outline",
 } as const;
 
-export function App1Content() {
+export function DashboardMetricsSection() {
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-6 w-full">
+      {/* 4 Stats KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {STATS.map((stat) => (
           <Card key={stat.label}>
@@ -97,6 +98,7 @@ export function App1Content() {
         ))}
       </div>
 
+      {/* Task Throughput Area Chart */}
       <Card>
         <CardHeader>
           <CardTitle>Task throughput</CardTitle>
@@ -159,98 +161,111 @@ export function App1Content() {
           </ChartContainer>
         </CardContent>
       </Card>
+    </div>
+  );
+}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Active projects</CardTitle>
-            <CardDescription>Your current project progress</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-5">
-            {app1Projects.map((project) => (
-              <div key={project.id} className="flex flex-col gap-2">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="truncate text-sm font-medium">
-                    {project.name}
-                  </h3>
-                  <Badge variant={STATUS_VARIANT[project.status]}>
-                    {project.status}
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {project.description}
-                </p>
-                <div className="flex items-center gap-3">
-                  <Progress
-                    value={project.progress}
-                    aria-label={`${project.name} progress`}
-                  />
-                  <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
-                    {project.progress}%
-                  </span>
-                </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-1">
-                    {project.team.map((member) => (
-                      <Avatar key={member.name} className="h-6 w-6">
-                        <AvatarImage
-                          src={member.avatar}
-                          alt={member.name}
-                          className="object-[50%_15%]"
-                        />
-                        <AvatarFallback className="text-[10px]">
-                          {member.initials}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    Due {project.dueDate}
-                  </span>
-                </div>
+export function DashboardProjectsAndActivity() {
+  return (
+    <div className="grid gap-6 lg:grid-cols-2 w-full">
+      <Card>
+        <CardHeader>
+          <CardTitle>Active projects</CardTitle>
+          <CardDescription>Your current project progress</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-5">
+          {app1Projects.map((project) => (
+            <div key={project.id} className="flex flex-col gap-2">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="truncate text-sm font-medium">
+                  {project.name}
+                </h3>
+                <Badge variant={STATUS_VARIANT[project.status]}>
+                  {project.status}
+                </Badge>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+              <p className="text-xs text-muted-foreground">
+                {project.description}
+              </p>
+              <div className="flex items-center gap-3">
+                <Progress
+                  value={project.progress}
+                  aria-label={`${project.name} progress`}
+                />
+                <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
+                  {project.progress}%
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-1">
+                  {project.team.map((member) => (
+                    <Avatar key={member.name} className="h-6 w-6">
+                      <AvatarImage
+                        src={member.avatar}
+                        alt={member.name}
+                        className="object-[50%_15%]"
+                      />
+                      <AvatarFallback className="text-[10px]">
+                        {member.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  ))}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Due {project.dueDate}
+                </span>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent activity</CardTitle>
-            <CardDescription>Latest updates from your team</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ol className="flex flex-col gap-4">
-              {app1Activity.map((entry) => (
-                <li key={entry.id} className="flex items-start gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={entry.person.avatar}
-                      alt={entry.person.name}
-                      className="object-[50%_15%]"
-                    />
-                    <AvatarFallback className="text-xs">
-                      {entry.person.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm leading-snug">
-                      <span className="font-medium">
-                        {entry.person.name}
-                      </span>{" "}
-                      <span className="text-muted-foreground">
-                        {entry.action}
-                      </span>
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {entry.time}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent activity</CardTitle>
+          <CardDescription>Latest updates from your team</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ol className="flex flex-col gap-4">
+            {app1Activity.map((entry) => (
+              <li key={entry.id} className="flex items-start gap-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={entry.person.avatar}
+                    alt={entry.person.name}
+                    className="object-[50%_15%]"
+                  />
+                  <AvatarFallback className="text-xs">
+                    {entry.person.initials}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm leading-snug">
+                    <span className="font-medium">
+                      {entry.person.name}
+                    </span>{" "}
+                    <span className="text-muted-foreground">
+                      {entry.action}
+                    </span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {entry.time}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export function App1Content() {
+  return (
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+      <DashboardMetricsSection />
+      <DashboardProjectsAndActivity />
     </div>
   );
 }

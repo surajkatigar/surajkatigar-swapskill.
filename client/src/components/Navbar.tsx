@@ -42,9 +42,8 @@ export const Navbar: React.FC = () => {
   };
 
   const navLinks = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Explore Skills', path: '/explore', icon: Search },
     { name: 'Peer Matches', path: '/matches', icon: Sparkles },
+    { name: 'Explore Skills', path: '/explore', icon: Search },
     { name: 'Sessions', path: '/sessions', icon: Calendar },
     { name: 'Chat', path: '/chat', icon: MessageSquare },
     { name: 'Workshops', path: '/workshops', icon: Users },

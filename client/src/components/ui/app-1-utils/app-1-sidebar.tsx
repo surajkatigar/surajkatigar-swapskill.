@@ -21,7 +21,6 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 const NAV_ITEMS = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "Peer Matches", icon: Sparkles, href: "/matches" },
   { label: "Explore Skills", icon: Search, href: "/explore" },
   { label: "Skill Sessions", icon: Calendar, href: "/sessions" },
@@ -33,7 +32,6 @@ const NAV_ITEMS = [
 
 const SECONDARY_ITEMS = [
   { label: "My Profile", icon: Settings, href: "/profile" },
-  { label: "Escrow & Credits", icon: CreditCard, href: "/dashboard" },
   { label: "Admin Console", icon: ShieldCheck, href: "/admin" },
   { label: "Support & FAQs", icon: HelpCircle, href: "/explore" },
 ];

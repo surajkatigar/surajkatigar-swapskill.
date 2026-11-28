@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowLeftRight, PlusCircle } from 'lucide-react';
+import { Sparkles, ArrowLeftRight, PlusCircle, Users } from 'lucide-react';
 import api from '../services/api';
 import { MatchResult, User } from '../types';
 import { MatchCard } from '../components/MatchCard';
 import { BookingModal } from '../components/BookingModal';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { DashboardMetricsSection, DashboardProjectsAndActivity } from '@/components/ui/app-1';
 
 export const MatchmakingPage: React.FC = () => {
   const { user } = useAuth();
@@ -41,15 +42,21 @@ export const MatchmakingPage: React.FC = () => {
   const mutualCount = matches.filter((m) => m.matchType === 'MUTUAL_EXCHANGE').length;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 text-slate-100">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-slate-100">
+      {/* Universal Dashboard Metrics & Throughput Chart */}
+      <DashboardMetricsSection />
+
+      {/* Active Projects and Activity */}
+      <DashboardProjectsAndActivity />
+
+      {/* Peer Matches Section Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4 border-t border-white/[0.08]">
         <div>
           <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-indigo-950/70 border border-indigo-500/40 text-indigo-300 text-xs font-bold mb-2">
             <Sparkles size={13} className="text-indigo-400 animate-spin" />
             <span>Automated Peer Barter Matchmaker</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Your Smart Peer Matches</h1>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Your Smart Peer Matches</h2>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
             We cross-reference your "Can Teach" and "Want to Learn" skills with peers to discover high-compatibility knowledge exchanges.
           </p>
@@ -100,28 +107,32 @@ export const MatchmakingPage: React.FC = () => {
         </div>
         <Link
           to="/profile"
-          className="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-white/[0.08] hover:bg-white/[0.14] text-slate-200 border border-white/10 rounded-xl text-xs font-semibold shrink-0 transition-colors"
+          className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center space-x-1 shrink-0 font-medium"
         >
-          <PlusCircle size={14} className="text-indigo-400" />
-          <span>Add More Skills</span>
+          <PlusCircle size={14} />
+          <span>Add more skills to get better matches</span>
         </Link>
       </div>
 
-      {/* Matches Grid */}
+      {/* Results Grid */}
       {loading ? (
-        <div className="py-24 text-center text-slate-400 text-sm">Calculating reciprocal compatibility scores...</div>
+        <div className="py-24 text-center">
+          <div className="inline-block animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full mb-3" />
+          <p className="text-slate-400 text-sm">Evaluating peer skill inventories...</p>
+        </div>
       ) : filteredMatches.length === 0 ? (
-        <div className="bg-[#0d0d14]/80 backdrop-blur-xl rounded-2xl p-12 text-center border border-white/10 shadow-xl">
-          <Sparkles size={32} className="mx-auto text-slate-500 mb-3" />
-          <h3 className="text-base font-bold text-white">No matches found in this filter</h3>
-          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
-            Try adding more skills to your "Can Teach" or "Wants to Learn" lists on your profile to unlock new peer pairings.
+        <div className="py-20 text-center bg-[#0d0d14]/60 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+          <Users size={48} className="mx-auto text-slate-600 mb-4" />
+          <h3 className="text-lg font-bold text-white">No matches found in this category</h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto mt-1 mb-6">
+            Try updating your profile with more skills you can teach and skills you want to learn.
           </p>
           <Link
             to="/profile"
-            className="inline-block mt-4 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-600/30"
+            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition-all"
           >
-            Update Your Skills
+            <PlusCircle size={15} />
+            <span>Update My Skill Matrix</span>
           </Link>
         </div>
       ) : (
@@ -142,11 +153,13 @@ export const MatchmakingPage: React.FC = () => {
           teacher={selectedTeacher}
           onClose={() => setSelectedTeacher(null)}
           onSuccess={() => {
+            fetchMatches();
             setSelectedTeacher(null);
-            alert('Session requested! 1 credit will be held in escrow once teacher confirms.');
           }}
         />
       )}
     </div>
   );
 };
+
+export default MatchmakingPage;

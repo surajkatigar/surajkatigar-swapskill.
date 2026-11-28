@@ -54,7 +54,7 @@ export const AppContent: React.FC = () => {
           </ProtectedRoute>
         }
       >
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<Navigate to="/matches" replace />} />
         <Route path="/matches" element={<MatchmakingPage />} />
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/sessions" element={<SessionsPage />} />
