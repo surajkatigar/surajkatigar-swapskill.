@@ -11,9 +11,14 @@ import {
   Tag,
   Check,
   AlertCircle,
+  TrendingUp,
 } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export const AdminDashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -95,22 +100,31 @@ export const AdminDashboardPage: React.FC = () => {
 
   if (user?.role !== 'ADMIN') {
     return (
-      <div className="max-w-md mx-auto py-24 text-center text-slate-100">
-        <Shield size={36} className="mx-auto text-rose-500 mb-3" />
-        <h2 className="text-lg font-bold text-white">Admin Clearance Required</h2>
-        <p className="text-xs text-slate-400 mt-1">
-          Use the persona switcher in the top bar to switch to <strong>SwapSkill Admin</strong> (admin@swapskill.com).
+      <div className="max-w-md mx-auto py-24 px-4 text-center text-slate-100">
+        <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto mb-3 border border-rose-500/30">
+          <Shield size={26} />
+        </div>
+        <h2 className="text-xl font-bold text-white">Admin Clearance Required</h2>
+        <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+          Switch to the <strong>SwapSkill Admin</strong> persona in the top right menu to access platform operations.
         </p>
       </div>
     );
   }
 
+  const ADMIN_STATS = stats ? [
+    { label: "Total Registered Peers", value: stats.totalUsers, hint: "Active platform participants", icon: Users },
+    { label: "Completed Barters", value: stats.completedSwaps, hint: "Verified skill sessions", icon: Calendar },
+    { label: "Circulating Tokens", value: `${stats.totalCreditsInCirculation}c`, hint: "Escrow & peer wallets", icon: Coins },
+    { label: "Pending Disputes", value: stats.pendingDisputes, hint: stats.pendingDisputes > 0 ? "Requires review" : "Clear queue", icon: AlertTriangle },
+  ] : [];
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-slate-100">
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full text-slate-100">
       {/* Toast Alert */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-50 flex items-center space-x-2.5 px-4 py-3 rounded-xl shadow-2xl text-sm font-semibold border backdrop-blur-xl animate-in fade-in slide-in-from-top-2 ${
+          className={`fixed top-20 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-2xl text-sm font-semibold border backdrop-blur-xl animate-in fade-in slide-in-from-top-2 ${
             toast.type === 'success'
               ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200'
               : 'bg-rose-950/90 border-rose-500/50 text-rose-200'
@@ -121,184 +135,160 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex items-center space-x-3.5">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-rose-500 text-white flex items-center justify-center font-bold shadow-lg shadow-rose-600/30">
-          <Shield size={20} />
-        </div>
-        <div>
-          <h1 className="text-2xl font-extrabold text-white">Platform Admin &amp; Safety Center</h1>
-          <p className="text-xs text-slate-400 mt-0.5">Manage skill taxonomies, track barter metrics, and resolve peer disputes.</p>
-        </div>
-      </div>
-
-      {/* KPI Cards */}
+      {/* KPI Cards in App1 Style */}
       {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="bg-[#0d0d14]/80 backdrop-blur-xl p-5 rounded-2xl border border-white/10 shadow-xl">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
-              <span>Total Peers</span>
-              <Users size={16} className="text-indigo-400" />
-            </div>
-            <p className="text-2xl font-extrabold text-white font-mono mt-2">{stats.totalUsers}</p>
-          </div>
-
-          <div className="bg-[#0d0d14]/80 backdrop-blur-xl p-5 rounded-2xl border border-white/10 shadow-xl">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
-              <span>Completed Sessions</span>
-              <Calendar size={16} className="text-emerald-400" />
-            </div>
-            <p className="text-2xl font-extrabold text-emerald-400 font-mono mt-2">{stats.completedSessions}</p>
-          </div>
-
-          <div className="bg-[#0d0d14]/80 backdrop-blur-xl p-5 rounded-2xl border border-white/10 shadow-xl">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
-              <span>Escrow Credits Active</span>
-              <Coins size={16} className="text-amber-400" />
-            </div>
-            <p className="text-2xl font-extrabold text-amber-400 font-mono mt-2">{stats.lockedEscrowSessions}</p>
-          </div>
-
-          <div className="bg-[#0d0d14]/80 backdrop-blur-xl p-5 rounded-2xl border border-white/10 shadow-xl">
-            <div className="flex items-center justify-between text-slate-400 text-xs">
-              <span>Open Safety Disputes</span>
-              <AlertTriangle size={16} className="text-rose-400" />
-            </div>
-            <p className="text-2xl font-extrabold text-rose-400 font-mono mt-2">{stats.openDisputes}</p>
-          </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {ADMIN_STATS.map((stat) => (
+            <Card key={stat.label} className="bg-card/75 border-border">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-slate-300">
+                  {stat.label}
+                </CardTitle>
+                <stat.icon
+                  aria-hidden
+                  className={`h-5 w-5 ${stat.label.includes('Disputes') && stats.pendingDisputes > 0 ? 'text-rose-400' : 'text-indigo-400'}`}
+                />
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold tabular-nums text-white">
+                  {stat.value}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">{stat.hint}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left: Skill Categories Management */}
-        <div className="bg-[#0d0d14]/80 backdrop-blur-xl rounded-2xl p-6 border border-white/10 shadow-xl space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div>
-              <h3 className="text-base font-bold text-white">Manage Skill Categories</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Configure canonical taxonomies for peer searches.</p>
-            </div>
-            <Tag size={18} className="text-indigo-400" />
-          </div>
-
-          {/* Add Category Form */}
-          <form onSubmit={handleCreateCategory} className="bg-white/[0.04] p-4 rounded-xl border border-white/10 space-y-3">
-            <h4 className="text-xs font-bold text-slate-200">Add New Category</h4>
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                type="text"
-                required
-                placeholder="Category Name (e.g. AI & Prompting)"
-                value={catName}
-                onChange={(e) => setCatName(e.target.value)}
-                className="px-3 py-2 text-xs border border-white/10 rounded-lg bg-white/[0.06] text-white placeholder-slate-500 focus:outline-hidden focus:border-indigo-500"
-              />
-              <input
-                type="text"
-                placeholder="Popular Tags (comma separated)"
-                value={catTags}
-                onChange={(e) => setCatTags(e.target.value)}
-                className="px-3 py-2 text-xs border border-white/10 rounded-lg bg-white/[0.06] text-white placeholder-slate-500 focus:outline-hidden focus:border-indigo-500"
-              />
-            </div>
-            <input
-              type="text"
-              placeholder="Short description..."
-              value={catDesc}
-              onChange={(e) => setCatDesc(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-white/10 rounded-lg bg-white/[0.06] text-white placeholder-slate-500 focus:outline-hidden focus:border-indigo-500"
-            />
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={addingCat}
-                className="px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-lg text-xs font-bold shadow-md shadow-indigo-600/25 transition-all"
-              >
-                {addingCat ? 'Adding...' : 'Add Category'}
-              </button>
-            </div>
-          </form>
-
-          {/* Existing Categories List */}
-          <div className="space-y-2.5 max-h-72 overflow-y-auto">
-            {categories.map((c) => (
-              <div key={c.id} className="p-3 rounded-xl border border-white/5 bg-white/[0.03] hover:border-white/15 transition-colors">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white">{c.name}</span>
-                </div>
-                {c.description && <p className="text-[11px] text-slate-400 mt-0.5">{c.description}</p>}
-                {c.popularTags && (
-                  <p className="text-[10px] text-indigo-400 font-mono mt-1">Tags: {c.popularTags}</p>
-                )}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Dispute Resolution Queue */}
+        <Card className="bg-card/75 border-border">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg text-white">Dispute Resolution Queue</CardTitle>
+                <CardDescription>
+                  Review contested skill exchanges &amp; escrow reversals
+                </CardDescription>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right: Dispute Resolution Center */}
-        <div className="bg-[#0d0d14]/80 backdrop-blur-xl rounded-2xl p-6 border border-white/10 shadow-xl space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div>
-              <h3 className="text-base font-bold text-white">Safety &amp; Dispute Resolution</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Handle reported sessions and refund escrow if required.</p>
+              <Badge variant={disputes.length > 0 ? "destructive" : "secondary"}>
+                {disputes.length} Pending
+              </Badge>
             </div>
-            <AlertTriangle size={18} className="text-amber-400" />
-          </div>
-
-          {disputes.length === 0 ? (
-            <div className="py-12 text-center text-slate-500 text-xs">
-              No active dispute reports at this time. All exchanges running smoothly!
-            </div>
-          ) : (
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {disputes.map((d) => (
-                <div key={d.id} className="p-4 rounded-xl border border-white/10 bg-white/[0.03] space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white">
-                      Reporter: {d.reporter?.name} vs {d.reportedUser?.name}
-                    </span>
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                        d.status === 'OPEN'
-                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                          : 'bg-white/10 text-slate-400'
-                      }`}
-                    >
-                      {d.status}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-300 bg-white/[0.04] p-2.5 rounded-lg border border-white/5">
-                    "{d.reason}"
-                  </p>
-
-                  {d.session && (
-                    <p className="text-[11px] text-slate-400">
-                      Session: {d.session.skillName} (Escrow Locked:{' '}
-                      {d.session.escrowCreditLocked ? 'Yes' : 'No'})
-                    </p>
-                  )}
-
-                  {d.status === 'OPEN' && (
-                    <div className="flex items-center space-x-2 pt-1 border-t border-white/10">
-                      <button
-                        onClick={() => handleResolveDispute(d.id, true)}
-                        className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white rounded-lg text-xs font-semibold shadow-md shadow-emerald-600/25 transition-all"
-                      >
-                        Refund Escrow &amp; Resolve
-                      </button>
-                      <button
-                        onClick={() => handleResolveDispute(d.id, false)}
-                        className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-slate-300 rounded-lg text-xs font-semibold transition-colors"
-                      >
-                        Dismiss / Resolve
-                      </button>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            {disputes.length === 0 ? (
+              <div className="py-10 text-center">
+                <CheckCircle size={32} className="mx-auto text-emerald-400 mb-2 opacity-80" />
+                <p className="text-sm font-medium text-slate-300">No disputes pending adjudication</p>
+                <p className="text-xs text-slate-400 mt-1">All barter exchanges are running smoothly!</p>
+              </div>
+            ) : (
+              disputes.map((d) => (
+                <div
+                  key={d.id}
+                  className="p-4 rounded-xl border border-white/10 bg-white/[0.03] space-y-3"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-xs font-semibold text-rose-300 flex items-center gap-1.5">
+                        <AlertTriangle size={13} /> Reason: {d.reason}
+                      </p>
+                      <p className="text-xs text-slate-300 mt-1">
+                        Reported by: <span className="font-medium text-white">{d.reporter?.name}</span>
+                      </p>
                     </div>
-                  )}
+                    <Badge variant="outline" className="text-[10px] text-amber-300 border-amber-500/40">
+                      Escrow Held
+                    </Badge>
+                  </div>
+                  <div className="flex gap-2 pt-1">
+                    <Button
+                      size="sm"
+                      onClick={() => handleResolveDispute(d.id, true)}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs h-8"
+                    >
+                      <CheckCircle size={13} className="mr-1.5" /> Refund Escrow Credit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleResolveDispute(d.id, false)}
+                      className="text-xs h-8 text-slate-300 hover:text-white"
+                    >
+                      <XCircle size={13} className="mr-1.5" /> Dismiss &amp; Mark Resolved
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Skill Category Management */}
+        <Card className="bg-card/75 border-border">
+          <CardHeader>
+            <CardTitle className="text-lg text-white">Skill Taxonomies</CardTitle>
+            <CardDescription>
+              Platform skill categories &amp; barter verticals
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <form onSubmit={handleCreateCategory} className="space-y-3 p-3.5 rounded-xl border border-white/10 bg-white/[0.02]">
+              <div className="font-semibold text-xs text-slate-200 flex items-center gap-1.5">
+                <FolderPlus size={14} className="text-indigo-400" /> Add New Category
+              </div>
+              <div className="grid gap-2">
+                <Input
+                  placeholder="Category Name (e.g. AI & Concurrency)"
+                  value={catName}
+                  onChange={(e) => setCatName(e.target.value)}
+                  className="bg-white/5 border-white/10 text-xs h-9"
+                />
+                <Input
+                  placeholder="Description..."
+                  value={catDesc}
+                  onChange={(e) => setCatDesc(e.target.value)}
+                  className="bg-white/5 border-white/10 text-xs h-9"
+                />
+                <Input
+                  placeholder="Tags (comma-separated, e.g. PyTorch, Rust, LangChain)"
+                  value={catTags}
+                  onChange={(e) => setCatTags(e.target.value)}
+                  className="bg-white/5 border-white/10 text-xs h-9"
+                />
+              </div>
+              <Button
+                type="submit"
+                disabled={addingCat || !catName}
+                size="sm"
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs h-8"
+              >
+                {addingCat ? 'Creating...' : 'Save Category'}
+              </Button>
+            </form>
+
+            <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+              {categories.map((c) => (
+                <div
+                  key={c.id}
+                  className="p-3 rounded-xl border border-white/[0.06] bg-white/[0.02] flex items-center justify-between gap-2"
+                >
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-white truncate">{c.name}</p>
+                    <p className="text-[10px] text-slate-400 truncate">{c.description}</p>
+                  </div>
+                  <span className="shrink-0 text-[10px] font-mono text-indigo-300 bg-indigo-500/15 px-2 py-0.5 rounded-full">
+                    {c._count?.skills || 0} skills
+                  </span>
                 </div>
               ))}
             </div>
-          )}
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 };
+
+export default AdminDashboardPage;

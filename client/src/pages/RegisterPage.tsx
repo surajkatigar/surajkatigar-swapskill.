@@ -28,7 +28,7 @@ export const RegisterPage: React.FC = () => {
         headline,
         languages,
       });
-      navigate('/profile');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Registration failed');
     } finally {

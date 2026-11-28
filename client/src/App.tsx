@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import GeometricBackground from './components/ui/geometric';
+import { AppDashboardLayout } from './components/layout/AppDashboardLayout';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -37,95 +37,56 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 export const AppContent: React.FC = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const isPublicPage = ['/', '/login', '/register'].includes(location.pathname);
 
   const allRoutes = (
     <Routes>
+      {/* Public Pages */}
       <Route path="/" element={<HomePage />} />
-      <Route path="/explore" element={<ExplorePage />} />
-      <Route path="/users/:id" element={<UserProfilePage />} />
-      <Route path="/workshops" element={<WorkshopsPage />} />
-      <Route path="/circles" element={<LearningCirclesPage />} />
-
-      {/* Protected Routes */}
-      <Route
-        path="/matches"
-        element={
-          <ProtectedRoute>
-            <MatchmakingPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/sessions"
-        element={
-          <ProtectedRoute>
-            <SessionsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/chat"
-        element={
-          <ProtectedRoute>
-            <ChatPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/practice"
-        element={
-          <ProtectedRoute>
-            <PracticeTasksPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute>
-            <AdminDashboardPage />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Auth Routes */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+
+      {/* Unified App & Dashboard Pages */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <AppDashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/matches" element={<MatchmakingPage />} />
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/sessions" element={<SessionsPage />} />
+        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/workshops" element={<WorkshopsPage />} />
+        <Route path="/circles" element={<LearningCirclesPage />} />
+        <Route path="/practice" element={<PracticeTasksPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/users/:id" element={<UserProfilePage />} />
+        <Route path="/admin" element={<AdminDashboardPage />} />
+      </Route>
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 
+  if (isPublicPage) {
+    return (
+      <div className={`min-h-screen flex flex-col ${isHomePage ? 'bg-slate-50 text-slate-900' : 'bg-[#030303] text-slate-100'}`}>
+        {!isHomePage && <Navbar />}
+        <main className="flex-1 flex flex-col">
+          {allRoutes}
+        </main>
+        {!isHomePage && <Footer />}
+      </div>
+    );
+  }
+
   return (
-    <div className={`min-h-screen flex flex-col ${isHomePage ? 'bg-slate-50 text-slate-900' : 'bg-[#030303] text-slate-100'}`}>
-      {!isHomePage && <Navbar />}
-      <main className="flex-1 flex flex-col">
-        {isHomePage ? (
-          allRoutes
-        ) : (
-          <GeometricBackground className="flex-1 flex flex-col min-h-[calc(100vh-4rem)]">
-            {allRoutes}
-          </GeometricBackground>
-        )}
-      </main>
-      {!isHomePage && <Footer />}
+    <div className="min-h-screen flex flex-col bg-[#070709] text-slate-100">
+      {allRoutes}
     </div>
   );
 };
