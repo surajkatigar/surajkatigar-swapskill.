@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
+  LayoutDashboard,
   Sparkles,
   Search,
   Users,
@@ -41,6 +42,7 @@ export const Navbar: React.FC = () => {
   };
 
   const navLinks = [
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Explore Skills', path: '/explore', icon: Search },
     { name: 'Peer Matches', path: '/matches', icon: Sparkles },
     { name: 'Sessions', path: '/sessions', icon: Calendar },

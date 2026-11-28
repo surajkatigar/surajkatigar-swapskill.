@@ -18,6 +18,7 @@ import { WorkshopsPage } from './pages/WorkshopsPage';
 import { LearningCirclesPage } from './pages/LearningCirclesPage';
 import { PracticeTasksPage } from './pages/PracticeTasksPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
+import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 
@@ -83,6 +84,14 @@ export const AppContent: React.FC = () => {
         element={
           <ProtectedRoute>
             <PracticeTasksPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
           </ProtectedRoute>
         }
       />
