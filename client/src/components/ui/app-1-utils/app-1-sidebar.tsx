@@ -44,15 +44,17 @@ export function App1Sidebar() {
   const { user, logout } = useAuth();
 
   const currentUser = user || app1User;
-  const displayName = user?.name || app1User.name;
-  const displayEmail = user?.email || app1User.email;
+  const displayName = user?.name || app1User.name || "User";
+  const displayEmail = user?.email || app1User.email || "user@swapskill.io";
   const displayAvatar = user?.avatar || app1User.avatar;
-  const initials = displayName
-    .split(" ")
+  const initials = (displayName || "SS")
+    .trim()
+    .split(/\s+/)
     .map((n) => n[0])
+    .filter(Boolean)
     .join("")
     .slice(0, 2)
-    .toUpperCase();
+    .toUpperCase() || "SS";
 
   return (
     <aside

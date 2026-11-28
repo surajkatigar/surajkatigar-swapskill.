@@ -109,7 +109,6 @@ export function App1Content() {
             <AreaChart
               data={app1Chart}
               margin={{ left: 4, right: 4, top: 8 }}
-              accessibilityLayer
             >
               <defs>
                 <linearGradient
@@ -121,12 +120,12 @@ export function App1Content() {
                 >
                   <stop
                     offset="0%"
-                    stopColor="var(--color-completed)"
+                    stopColor="var(--color-completed, #10b981)"
                     stopOpacity={0.25}
                   />
                   <stop
                     offset="100%"
-                    stopColor="var(--color-completed)"
+                    stopColor="var(--color-completed, #10b981)"
                     stopOpacity={0.02}
                   />
                 </linearGradient>
@@ -144,7 +143,7 @@ export function App1Content() {
               <Area
                 dataKey="opened"
                 type="monotone"
-                stroke="var(--color-opened)"
+                stroke="var(--color-opened, #6366f1)"
                 strokeDasharray="4 4"
                 fill="none"
                 strokeWidth={2}
@@ -152,7 +151,7 @@ export function App1Content() {
               <Area
                 dataKey="completed"
                 type="monotone"
-                stroke="var(--color-completed)"
+                stroke="var(--color-completed, #10b981)"
                 fill="url(#app1Completed)"
                 strokeWidth={2}
               />
@@ -258,14 +257,16 @@ export function App1Content() {
 
 export function App1() {
   const { user } = useAuth();
-  const userName = user?.name || app1User.name;
+  const userName = user?.name || app1User.name || "User";
   const userAvatar = user?.avatar || app1User.avatar;
-  const userInitials = userName
-    .split(" ")
+  const userInitials = (userName || "SS")
+    .trim()
+    .split(/\s+/)
     .map((n) => n[0])
+    .filter(Boolean)
     .join("")
     .slice(0, 2)
-    .toUpperCase();
+    .toUpperCase() || "SS";
 
   return (
     <SidebarProvider>

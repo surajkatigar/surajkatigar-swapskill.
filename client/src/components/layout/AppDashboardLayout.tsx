@@ -32,26 +32,41 @@ export const AppDashboardLayout: React.FC = () => {
   const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     api.get("/auth/demo-users")
-      .then((res) => setDemoUsers(res.data))
-      .catch((e) => console.error(e));
+      .then((res) => {
+        if (isMounted && Array.isArray(res.data)) {
+          setDemoUsers(res.data);
+        }
+      })
+      .catch((e) => console.error("Could not load demo users", e));
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleSwitchUser = async (du: User) => {
     setIsSwitching(true);
     setShowDemoDropdown(false);
-    await switchDemoUser(du);
-    setIsSwitching(false);
+    try {
+      await switchDemoUser(du);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSwitching(false);
+    }
   };
 
-  const displayName = user?.name || app1User.name;
+  const displayName = user?.name || app1User.name || "User";
   const displayAvatar = user?.avatar || app1User.avatar;
   const initials = displayName
-    .split(" ")
+    .trim()
+    .split(/\s+/)
     .map((n) => n[0])
+    .filter(Boolean)
     .join("")
     .slice(0, 2)
-    .toUpperCase();
+    .toUpperCase() || "SS";
 
   const currentInfo = PAGE_TITLES[location.pathname] || {
     title: `Welcome back, ${displayName.split(" ")[0]}`,
@@ -88,53 +103,55 @@ export const AppDashboardLayout: React.FC = () => {
             <CreditBadge />
 
             {/* Quick Persona Switcher */}
-            <div className="relative hidden sm:block">
-              <button
-                type="button"
-                onClick={() => setShowDemoDropdown(!showDemoDropdown)}
-                disabled={isSwitching}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-200 bg-white/[0.07] hover:bg-white/[0.12] border border-white/10 transition-colors disabled:opacity-50"
-                title="Switch demo account to test reciprocal barter"
-              >
-                <Users size={13} className="text-indigo-400" />
-                <span className="hidden md:inline">{isSwitching ? "Switching..." : "Switch Persona"}</span>
-                <ChevronDown size={12} className="text-slate-400" />
-              </button>
+            {demoUsers.length > 0 && (
+              <div className="relative hidden sm:block">
+                <button
+                  type="button"
+                  onClick={() => setShowDemoDropdown(!showDemoDropdown)}
+                  disabled={isSwitching}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-200 bg-white/[0.07] hover:bg-white/[0.12] border border-white/10 transition-colors disabled:opacity-50"
+                  title="Switch demo account to test reciprocal barter"
+                >
+                  <Users size={13} className="text-indigo-400" />
+                  <span className="hidden md:inline">{isSwitching ? "Switching..." : "Switch Persona"}</span>
+                  <ChevronDown size={12} className="text-slate-400" />
+                </button>
 
-              {showDemoDropdown && (
-                <div className="absolute right-0 mt-2 w-64 bg-[#111116] rounded-2xl shadow-2xl border border-white/10 py-2 z-50 animate-in fade-in">
-                  <div className="px-3 py-1.5 border-b border-white/[0.06] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                    Select Test Account
+                {showDemoDropdown && (
+                  <div className="absolute right-0 mt-2 w-64 bg-[#111116] rounded-2xl shadow-2xl border border-white/10 py-2 z-50 animate-in fade-in">
+                    <div className="px-3 py-1.5 border-b border-white/[0.06] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                      Select Test Account
+                    </div>
+                    <div className="max-h-60 overflow-y-auto">
+                      {demoUsers.map((du) => (
+                        <button
+                          key={du.id}
+                          type="button"
+                          disabled={isSwitching}
+                          onClick={() => handleSwitchUser(du)}
+                          className={`w-full text-left px-3 py-2 text-xs hover:bg-white/[0.08] flex items-center gap-2.5 transition-colors ${
+                            user?.id === du.id ? "bg-indigo-600/20 text-indigo-300" : "text-slate-300"
+                          }`}
+                        >
+                          <img
+                            src={du.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80"}
+                            alt={du.name}
+                            className="w-7 h-7 rounded-full object-cover shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="truncate font-semibold text-white">{du.name}</p>
+                            <p className="text-[10px] text-slate-400 truncate">{du.headline}</p>
+                          </div>
+                          <span className="text-[10px] font-mono text-amber-300 font-bold bg-amber-500/15 border border-amber-500/20 px-1.5 py-0.5 rounded-md">
+                            {du.credits}c
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="max-h-60 overflow-y-auto">
-                    {demoUsers.map((du) => (
-                      <button
-                        key={du.id}
-                        type="button"
-                        disabled={isSwitching}
-                        onClick={() => handleSwitchUser(du)}
-                        className={`w-full text-left px-3 py-2 text-xs hover:bg-white/[0.08] flex items-center gap-2.5 transition-colors ${
-                          user?.id === du.id ? "bg-indigo-600/20 text-indigo-300" : "text-slate-300"
-                        }`}
-                      >
-                        <img
-                          src={du.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80"}
-                          alt={du.name}
-                          className="w-7 h-7 rounded-full object-cover shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="truncate font-semibold text-white">{du.name}</p>
-                          <p className="text-[10px] text-slate-400 truncate">{du.headline}</p>
-                        </div>
-                        <span className="text-[10px] font-mono text-amber-300 font-bold bg-amber-500/15 border border-amber-500/20 px-1.5 py-0.5 rounded-md">
-                          {du.credits}c
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
             <Button
               variant="ghost"

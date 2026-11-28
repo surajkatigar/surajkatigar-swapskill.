@@ -1,5 +1,9 @@
 import * as React from "react";
-import { ResponsiveContainer } from "recharts";
+import {
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  Legend as RechartsLegend,
+} from "recharts";
 import { cn } from "@/lib/utils";
 
 export type ChartConfig = Record<
@@ -22,6 +26,12 @@ export function ChartContainer({
   children,
   ...props
 }: ChartContainerProps) {
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const style = React.useMemo(() => {
     const colorStyles: Record<string, string> = {};
     for (const [key, value] of Object.entries(config)) {
@@ -33,29 +43,42 @@ export function ChartContainer({
   }, [config]);
 
   return (
-    <div className={cn("w-full", className)} style={style} {...props}>
-      <ResponsiveContainer width="100%" height="100%">
-        {children}
-      </ResponsiveContainer>
+    <div
+      className={cn("w-full h-64 min-h-[256px] relative", className)}
+      style={style}
+      {...props}
+    >
+      {mounted ? (
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200}>
+          {children}
+        </ResponsiveContainer>
+      ) : (
+        <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
+          Loading metrics visualization...
+        </div>
+      )}
     </div>
   );
 }
 
-export function ChartTooltip({ content, ...props }: any) {
-  const Comp = content || ChartTooltipContent;
-  return <Comp {...props} />;
-}
+// Recharts native Tooltip and Legend exports
+export const ChartTooltip = RechartsTooltip;
+export const ChartLegend = RechartsLegend;
 
-export function ChartTooltipContent({
-  active,
-  payload,
-  label,
-  className,
-}: any) {
-  if (!active || !payload?.length) return null;
+export const ChartTooltipContent = React.forwardRef<
+  HTMLDivElement,
+  {
+    active?: boolean;
+    payload?: Array<any>;
+    label?: string;
+    className?: string;
+  }
+>(({ active, payload, label, className }, ref) => {
+  if (!active || !payload || !payload.length) return null;
 
   return (
     <div
+      ref={ref}
       className={cn(
         "rounded-lg border bg-background/95 p-2.5 text-xs shadow-md backdrop-blur",
         className
@@ -76,18 +99,26 @@ export function ChartTooltipContent({
       </div>
     </div>
   );
-}
+});
+ChartTooltipContent.displayName = "ChartTooltipContent";
 
-export function ChartLegend({ content, ...props }: any) {
-  const Comp = content || ChartLegendContent;
-  return <Comp {...props} />;
-}
-
-export function ChartLegendContent({ payload, className }: any) {
-  if (!payload?.length) return null;
+export const ChartLegendContent = React.forwardRef<
+  HTMLDivElement,
+  {
+    payload?: Array<any>;
+    className?: string;
+  }
+>(({ payload, className }, ref) => {
+  if (!payload || !payload.length) return null;
 
   return (
-    <div className={cn("flex items-center justify-center gap-4 pt-3 text-xs", className)}>
+    <div
+      ref={ref}
+      className={cn(
+        "flex items-center justify-center gap-4 pt-3 text-xs",
+        className
+      )}
+    >
       {payload.map((entry: any, index: number) => (
         <div key={index} className="flex items-center gap-1.5">
           <span
@@ -99,4 +130,5 @@ export function ChartLegendContent({ payload, className }: any) {
       ))}
     </div>
   );
-}
+});
+ChartLegendContent.displayName = "ChartLegendContent";
